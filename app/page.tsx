@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import TextType from "@/components/TextType";
 
 
 export default function Home() {
@@ -17,6 +18,9 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false); // Track if we're on client-side
   const { theme, setTheme } = useTheme();
   const skyContainerRef = useRef<HTMLDivElement>(null);
+  const heroTitle = "Pete Thambundit Portfolio V 1.0.0";
+  const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
+
   
   // Set isClient to true when component mounts (client-side only)
   useEffect(() => {
@@ -164,12 +168,27 @@ export default function Home() {
 
         {/* Hero Content */}
         <div className="absolute bottom-10 left-0 right-0 p-4 text-center">
-          <h1 className="text-2xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-            pthambundit.dev
-          </h1>
-          <p className="mt-2 text-sm text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-            CS Major & Pokemon Trainer
-          </p>
+          <TextType
+            as="h1"
+            text={heroTitle}
+            loop={false}
+
+
+            className="text-2xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
+            cursorClassName="text-white"
+            hideCursorWhileTyping
+          />
+            <div className="h-2 "> {'\n'}</div>
+
+          <TextType
+            as="p"
+            text={heroSubtitle}
+
+
+            initialDelay={6000}
+            loop={false}
+            className="mt-2 text-sm text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
+          />
         </div>
       </div>
 

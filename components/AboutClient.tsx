@@ -111,12 +111,24 @@ export default function AboutClient() {
             <Card className="border-2 border-[#333] bg-[#192a56]/80 p-4 dark:bg-[#192a56]/80 light:bg-[#4169e1]/60">
               <h3 className="mb-2 text-sm font-bold text-white">Interests & Hobbies</h3>
               <div className="flex flex-wrap gap-2">
-                <Badge className="border-2 border-[#333] bg-[#4169e1] text-xs text-white">Pokemon Cards</Badge>
-                <Badge className="border-2 border-[#333] bg-[#9932cc] text-xs text-white">Bouldering</Badge>
-                <Badge className="border-2 border-[#333] bg-[#ff6347] text-xs text-white">Muay Thai</Badge>
-                <Badge className="border-2 border-[#333] bg-[#32cd32] text-xs text-white">Web Development</Badge>
-                <Badge className="border-2 border-[#333] bg-[#ffd700] text-xs text-white">AI & ML</Badge>
-                <Badge className="border-2 border-[#333] bg-[#4682b4] text-xs text-white">Running</Badge>
+                <Link href="/interests/pokemon-cards" className="inline-block">
+                  <Badge className="border-2 border-[#333] bg-[#4169e1] text-xs text-white">Pokemon Cards</Badge>
+                </Link>
+                <Link href="/interests/bouldering" className="inline-block">
+                  <Badge className="border-2 border-[#333] bg-[#9932cc] text-xs text-white">Bouldering</Badge>
+                </Link>
+                <Link href="/interests/muay-thai" className="inline-block">
+                  <Badge className="border-2 border-[#333] bg-[#ff6347] text-xs text-white">Muay Thai</Badge>
+                </Link>
+                <Link href="/interests/web-development" className="inline-block">
+                  <Badge className="border-2 border-[#333] bg-[#32cd32] text-xs text-white">Web Development</Badge>
+                </Link>
+                <Link href="/interests/ai-ml" className="inline-block">
+                  <Badge className="border-2 border-[#333] bg-[#ffd700] text-xs text-white">AI & ML</Badge>
+                </Link>
+                <Link href="/interests/running" className="inline-block">
+                  <Badge className="border-2 border-[#333] bg-[#4682b4] text-xs text-white">Running</Badge>
+                </Link>
               </div>
             </Card>
           </div>
