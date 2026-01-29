@@ -15,19 +15,11 @@ export default function Home() {
   const [pokemonGif, setPokemonGif] = useState("/images/jolteon-run.gif");
   const [secondPokemonGif, setSecondPokemonGif] = useState<string | null>(null);
   const [showSecondPokemon, setShowSecondPokemon] = useState(false);
-  const [isClient, setIsClient] = useState(false); // Track if we're on client-side
+  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const skyContainerRef = useRef<HTMLDivElement>(null);
   const heroTitle = "Pete Thambundit's Portfolio V0.0.2";
   const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
-
-  
-  // Set isClient to true when component mounts (client-side only)
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-
 
   // List of Pokemon run GIFs
   const pokemonRunGifs = [
@@ -37,6 +29,20 @@ export default function Home() {
     "/images/leafeon-run.gif",
     "/images/spoink-run.gif",
   ];
+
+  const updateDateTime = () => {
+    const now = new Date();
+    setCurrentDate(now.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+    // Format time as HH:MM
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    setCurrentTime(`${hours}:${minutes}`);
+  };
+
+  // Set isClient to true when component mounts (client-side only)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     // Set initial time and date
@@ -51,7 +57,7 @@ export default function Home() {
   // Pokemon animation effect
   useEffect(() => {
     // Only run animation on client-side
-    if (!isClient) return;
+    if (!mounted) return;
 
     // Animation function
     const movePokemon = () => {
@@ -95,24 +101,17 @@ export default function Home() {
 
     // Cleanup interval on component unmount
     return () => clearInterval(animationInterval);
-  }, [isClient, pokemonRunGifs]);
+  }, [mounted, pokemonRunGifs]);
 
-  const updateDateTime = () => {
-    const now = new Date();
-    setCurrentDate(now.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
-    // Format time as HH:MM
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    setCurrentTime(`${hours}:${minutes}`);
-  };
+  if (!mounted) return null;
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#1a1a1a] font-retro text-white dark:bg-[#1a1a1a] light:bg-[#f8f8f8] cursor-custom">
-      {/* 3DS Top Screen */}
+<div className="flex min-h-screen flex-col bg-background text-foreground font-retro cursor-custom">
+{/* 3DS Top Screen */}
       <div
         ref={skyContainerRef}
         className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]"
@@ -196,7 +195,7 @@ export default function Home() {
       <div className="relative flex flex-1 flex-col bg-gradient-to-b from-[#3b5998] to-[#192a56] dark:from-[#3b5998] dark:to-[#192a56] light:from-[#a0d8ef] light:to-[#87ceeb]">
         {/* Main Content Area */}
         <div className="flex-1 p-4">
-          <div className="mb-6 rounded-lg bg-white/10 p-4 backdrop-blur-sm dark:bg-white/10 light:bg-[#333]/10">
+          <div className="mb-6 rounded-lg border border-border bg-card p-4 backdrop-blur-sm">
             <div className="mb-2 flex items-center justify-between">
               <h2 className="text-lg font-bold dark:text-white light:text-[#333]">
                 Welcome to my Portfolio
