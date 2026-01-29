@@ -36,7 +36,7 @@ export default function AboutClient() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#1a1a1a] font-retro text-white dark:bg-[#1a1a1a] light:bg-[#f8f8f8]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
       <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]">
         <div className="absolute inset-0">
           <Image
@@ -68,14 +68,14 @@ export default function AboutClient() {
         </div>
       </div>
 
-      <div className="relative flex flex-1 flex-col bg-gradient-to-b from-[#3b5998] to-[#192a56] dark:from-[#3b5998] dark:to-[#192a56] light:from-[#a0d8ef] light:to-[#87ceeb]">
+      <div className="relative flex flex-1 flex-col bg-background">
         <div className="flex-1 overflow-auto p-4">
           <div className="mb-4 flex items-center">
             <Link href="/">
               <Button
                 variant="ghost"
                 size="icon"
-                className="mr-2 h-8 w-8 rounded-full bg-[#333]/50 dark:bg-[#333]/50 light:bg-[#333]/20"
+                className="mr-2 h-8 w-8 rounded-full bg-muted"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -84,7 +84,7 @@ export default function AboutClient() {
           </div>
 
           <div className="mb-4 flex flex-col items-center">
-            <div className="relative mb-2 h-32 w-32 overflow-hidden rounded-full border-4 border-[#333] transform transition-transform duration-500 scale-100 opacity-100">
+            <div className="relative mb-2 h-32 w-32 overflow-hidden rounded-full border-4 border-border transform transition-transform duration-500 scale-100 opacity-100">
               <Image
                 src="/images/pete.jpg"
                 width={128}
@@ -93,23 +93,23 @@ export default function AboutClient() {
                 className="pixelated object-contain"
               />
             </div>
-            <h3 className="text-lg font-bold dark:text-white light:text-[#333] transition-opacity duration-300">Pete</h3>
-            <p className="text-xs text-gray-300 dark:text-gray-300 light:text-[#333]/80 transition-opacity duration-300">CS Major @USFCA</p>
+            <h3 className="text-lg font-bold text-foreground transition-opacity duration-300">Pete</h3>
+            <p className="text-xs text-muted-foreground transition-opacity duration-300">CS Major @USFCA</p>
           </div>
 
           <div className="opacity-100 transition-opacity duration-500">
-            <Card className="mb-4 border-2 border-[#333] bg-[#192a56]/80 p-4 dark:bg-[#192a56]/80 light:bg-[#4169e1]/60">
-              <h3 className="mb-2 text-sm font-bold text-white">Background</h3>
+            <Card className="mb-4 border border-border bg-card p-4">
+              <h3 className="mb-2 text-sm font-bold text-foreground">Background</h3>
               <div>
-                <p className="mb-2 text-xs text-white">I'm a Computer Science major with a passion for creating engaging digital experiences. I enjoy going to hackathons,where I can make new friends, while also building cool projects!</p>
-                <p className="text-xs text-white">Currently, I'm focused on full-stack web development, UI/UX Design, and AI/ML as well as exploring the intersection of art and technology. When I'm not coding, you can find me in the gym, practicing Muay Thai, collecting Pokemon cards, or Bouldering.</p>
+                <p className="mb-2 text-xs text-foreground">I'm a Computer Science major with a passion for creating engaging digital experiences. I enjoy going to hackathons,where I can make new friends, while also building cool projects!</p>
+                <p className="text-xs text-foreground">Currently, I'm focused on full-stack web development, UI/UX Design, and AI/ML as well as exploring the intersection of art and technology. When I'm not coding, you can find me in the gym, practicing Muay Thai, collecting Pokemon cards, or Bouldering.</p>
               </div>
             </Card>
           </div>
 
           <div className="opacity-100 transition-opacity duration-500">
-            <Card className="border-2 border-[#333] bg-[#192a56]/80 p-4 dark:bg-[#192a56]/80 light:bg-[#4169e1]/60">
-              <h3 className="mb-2 text-sm font-bold text-white">Interests & Hobbies</h3>
+            <Card className="border border-border bg-card p-4">
+              <h3 className="mb-2 text-sm font-bold text-foreground">Interests & Hobbies</h3>
               <div className="flex flex-wrap gap-2">
                 <Link href="/interests/pokemon-cards" className="inline-block">
                   <Badge className="border-2 border-[#333] bg-[#4169e1] text-xs text-white">Pokemon Cards</Badge>
@@ -134,7 +134,7 @@ export default function AboutClient() {
           </div>
         </div>
 
-        <div className="border-t-2 border-[#333] bg-[#4682b4] p-2 text-center text-sm dark:bg-[#4682b4] light:bg-[#87ceeb] dark:border-[#333] light:border-[#4169e1]">
+        <div className="border-t border-border bg-background p-2 text-center text-sm">
           <p></p>
         </div>
       </div>

@@ -43,7 +43,7 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#1a1a1a] font-retro text-white dark:bg-[#1a1a1a] light:bg-[#f8f8f8]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
       {/* 3DS Top Screen */}
       <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]">
         <div className="absolute inset-0">
@@ -79,7 +79,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* 3DS Bottom Screen */}
-      <div className="relative flex flex-1 flex-col bg-gradient-to-b from-[#3b5998] to-[#192a56] dark:from-[#3b5998] dark:to-[#192a56] light:from-[#a0d8ef] light:to-[#87ceeb]">
+      <div className="relative flex flex-1 flex-col bg-background">
         {/* Main Content Area */}
         <div className="flex-1 overflow-auto p-4">
           <div className="mb-4 flex items-center">
@@ -87,12 +87,12 @@ export default function ProjectsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="mr-2 h-8 w-8 rounded-full bg-[#333]/50 dark:bg-[#333]/50 light:bg-[#333]/20"
+                className="mr-2 h-8 w-8 rounded-full bg-muted"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <h2 className="text-lg font-bold dark:text-white light:text-[#333]">My Projects</h2>
+            <h2 className="text-lg font-bold text-foreground">My Projects</h2>
           </div>
 
           <div className="grid gap-4">
@@ -127,10 +127,10 @@ export default function ProjectsPage() {
             ].map((project, index) => (
               <Card
                 key={index}
-                className="overflow-hidden border-2 border-[#333] bg-[#192a56]/80 dark:bg-[#192a56]/80 light:bg-[#4169e1]/60 relative"
+                className="overflow-hidden border border-border bg-card relative"
               >
                 <div className="flex items-start gap-3 p-3">
-                  <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 border-[#333] bg-[#333]">
+                  <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-border bg-muted">
                     <Image
                       src={project.image || "/placeholder.svg"}
                       width={64}
@@ -185,7 +185,7 @@ export default function ProjectsPage() {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-gray-300">{project.description}</p>
+                    <p className="text-xs text-muted-foreground">{project.description}</p>
                   </div>
                 </div>
               </Card>
@@ -194,7 +194,7 @@ export default function ProjectsPage() {
         </div>
 
         {/* Bottom Status Bar - Empty as requested */}
-        <div className="border-t-2 border-[#333] bg-[#4682b4] p-2 text-center text-sm dark:bg-[#4682b4] light:bg-[#87ceeb] dark:border-[#333] light:border-[#4169e1]">
+        <div className="border-t border-border bg-background p-2 text-center text-sm">
           <p></p>
         </div>
       </div>

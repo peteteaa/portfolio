@@ -18,7 +18,7 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const skyContainerRef = useRef<HTMLDivElement>(null);
-  const heroTitle = "Pete Thambundit's Portfolio V0.0.2";
+  const heroTitle = "Pete Thambundit's Portfolio V0.0.3";
   const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
 
   // List of Pokemon run GIFs

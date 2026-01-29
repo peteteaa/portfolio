@@ -42,7 +42,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#1a1a1a] font-retro text-white dark:bg-[#1a1a1a] light:bg-[#f8f8f8]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
       {/* 3DS Top Screen */}
       <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]">
         <div className="absolute inset-0">
@@ -78,7 +78,7 @@ export default function ContactPage() {
       </div>
 
       {/* 3DS Bottom Screen */}
-      <div className="relative flex flex-1 flex-col bg-gradient-to-b from-[#3b5998] to-[#192a56] dark:from-[#3b5998] dark:to-[#192a56] light:from-[#a0d8ef] light:to-[#87ceeb]">
+      <div className="relative flex flex-1 flex-col bg-background">
         {/* Main Content Area */}
         <div className="flex-1 overflow-auto p-4">
           <div className="mb-4 flex items-center">
@@ -86,7 +86,7 @@ export default function ContactPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="mr-2 h-8 w-8 rounded-full bg-[#333]/50 dark:bg-[#333]/50 light:bg-[#333]/20"
+                className="mr-2 h-8 w-8 rounded-full bg-muted"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -94,47 +94,47 @@ export default function ContactPage() {
             <h2 className="text-lg font-bold dark:text-white light:text-[#333]">Contact Me</h2>
           </div>
 
-          <Card className="mb-4 border-2 border-[#333] bg-[#192a56]/80 p-4 dark:bg-[#192a56]/80 light:bg-[#4169e1]/60">
+          <Card className="mb-4 border border-border bg-card p-4">
             <form className="space-y-3">
               <div className="space-y-1">
-                <label htmlFor="name" className="block text-xs font-medium dark:text-white light:text-white">
+                <label htmlFor="name" className="block text-xs font-medium text-foreground">
                   Name
                 </label>
                 <input
                   id="name"
                   type="text"
-                  className="w-full rounded border-2 border-[#333] bg-[#0a1128] p-2 text-xs text-white focus:border-[#4169e1] focus:outline-none dark:bg-[#0a1128] light:bg-[#e6e6fa] light:text-[#333]"
+                  className="w-full rounded border border-input bg-background p-2 text-xs text-foreground focus:border-ring focus:outline-none"
                   placeholder="Your Name"
                 />
               </div>
   
               <div className="space-y-1">
-                <label htmlFor="message" className="block text-xs font-medium dark:text-white light:text-white">
+                <label htmlFor="message" className="block text-xs font-medium text-foreground">
                   Message
                 </label>
                 <textarea
                   id="message"
                   rows={4}
-                  className="w-full rounded border-2 border-[#333] bg-[#0a1128] p-2 text-xs text-white focus:border-[#4169e1] focus:outline-none dark:bg-[#0a1128] light:bg-[#e6e6fa] light:text-[#333]"
+                  className="w-full rounded border border-input bg-background p-2 text-xs text-foreground focus:border-ring focus:outline-none"
                   placeholder="Hi, I'd like to discuss a project..."
                 ></textarea>
               </div>
-              <Button className="w-full border-2 border-[#333] bg-[#4169e1] px-4 py-1 text-xs text-white hover:bg-[#3a5fcd]">
+              <Button className="w-full px-4 py-1 text-xs">
                 Send Message
               </Button>
             </form>
           </Card>
 
-          <Card className="border-2 border-[#333] bg-[#192a56]/80 p-4 dark:bg-[#192a56]/80 light:bg-[#4169e1]/60">
-            <h3 className="mb-3 text-sm font-bold dark:text-white light:text-white">Connect With Me</h3>
+          <Card className="border border-border bg-card p-4">
+            <h3 className="mb-3 text-sm font-bold text-foreground">Connect With Me</h3>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-md bg-transparent">
                   <Image src="/images/mail-icon.png" width={24} height={24} alt="Email" className="pixelated" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-300 dark:text-gray-300 light:text-gray-100">Email</p>
-                  <p className="text-xs font-medium dark:text-white light:text-white">pthambundit@icloud.com</p>
+                  <p className="text-xs text-muted-foreground">Email</p>
+                  <p className="text-xs font-medium text-foreground">pthambundit@icloud.com</p>
                 </div>
               </div>
               <a 
@@ -147,8 +147,8 @@ export default function ContactPage() {
                   <Image src="/images/github-icon.png" width={24} height={24} alt="GitHub" className="pixelated" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-300 dark:text-gray-300 light:text-gray-100">GitHub</p>
-                  <p className="text-xs font-medium dark:text-white light:text-white">github.com/peteteaa</p>
+                  <p className="text-xs text-muted-foreground">GitHub</p>
+                  <p className="text-xs font-medium text-foreground">github.com/peteteaa</p>
                 </div>
               </a>
               <a 
@@ -176,8 +176,8 @@ export default function ContactPage() {
                   />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-300 dark:text-gray-300 light:text-gray-100">Instagram</p>
-                  <p className="text-xs font-medium dark:text-white light:text-white">instagram.com/ashdev</p>
+                  <p className="text-xs text-muted-foreground">Instagram</p>
+                  <p className="text-xs font-medium text-foreground">instagram.com/peteteaa</p>
                 </div>
               </div>
             </div>
@@ -185,7 +185,7 @@ export default function ContactPage() {
         </div>
 
         {/* Bottom Status Bar - Empty as requested */}
-        <div className="border-t-2 border-[#333] bg-[#4682b4] p-2 text-center text-sm dark:bg-[#4682b4] light:bg-[#87ceeb] dark:border-[#333] light:border-[#4169e1]">
+        <div className="border-t border-border bg-background p-2 text-center text-sm">
           <p></p>
         </div>
       </div>
