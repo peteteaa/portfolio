@@ -41,7 +41,7 @@ export default function SkillsPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#1a1a1a] font-retro text-white dark:bg-[#1a1a1a] light:bg-[#f8f8f8]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
       {/* 3DS Top Screen */}
       <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]">
         <div className="absolute inset-0">
@@ -76,7 +76,7 @@ export default function SkillsPage() {
       </div>
 
       {/* 3DS Bottom Screen */}
-      <div className="relative flex flex-1 flex-col bg-gradient-to-b from-[#3b5998] to-[#192a56] dark:from-[#3b5998] dark:to-[#192a56] light:from-[#a0d8ef] light:to-[#87ceeb]">
+      <div className="relative flex flex-1 flex-col bg-background">
         {/* Main Content Area */}
         <div className="flex-1 overflow-auto p-4">
           <div className="mb-4 flex items-center">
@@ -84,12 +84,12 @@ export default function SkillsPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="mr-2 h-8 w-8 rounded-full bg-[#333]/50 dark:bg-[#333]/50 light:bg-[#333]/20"
+                className="mr-2 h-8 w-8 rounded-full bg-muted"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <h2 className="text-lg font-bold dark:text-white light:text-[#333]">My Skills</h2>
+            <h2 className="text-lg font-bold text-foreground">My Skills</h2>
           </div>
 
           <div className="grid gap-6">
@@ -117,7 +117,7 @@ export default function SkillsPage() {
             ].map((category, index) => (
               <Card
                 key={index}
-                className="border-2 border-[#333] bg-[#192a56]/80 p-3 dark:bg-[#192a56]/80 light:bg-[#4169e1]/60"
+                className="border border-border bg-card p-3"
               >
                 <div className="mb-2 flex items-center gap-2">
                   <div className="h-6 w-6 rounded-md" style={{ backgroundColor: category.color }}></div>
@@ -126,8 +126,8 @@ export default function SkillsPage() {
                 <div className="grid grid-cols-2 gap-2">
                   {category.skills.map((skill, skillIndex) => (
                     <div key={skillIndex} className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-white"></div>
-                      <span className="text-xs dark:text-white light:text-white">{skill}</span>
+                      <div className="h-2 w-2 rounded-full bg-foreground"></div>
+                      <span className="text-xs text-foreground">{skill}</span>
                     </div>
                   ))}
                 </div>

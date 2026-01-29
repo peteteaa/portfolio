@@ -192,19 +192,19 @@ export default function Home() {
       </div>
 
       {/* 3DS Bottom Screen */}
-      <div className="relative flex flex-1 flex-col bg-gradient-to-b from-[#3b5998] to-[#192a56] dark:from-[#3b5998] dark:to-[#192a56] light:from-[#a0d8ef] light:to-[#87ceeb]">
+      <div className="relative flex flex-1 flex-col bg-background">
         {/* Main Content Area */}
         <div className="flex-1 p-4">
           <div className="mb-6 rounded-lg border border-border bg-card p-4 backdrop-blur-sm">
             <div className="mb-2 flex items-center justify-between">
-              <h2 className="text-lg font-bold dark:text-white light:text-[#333]">
+              <h2 className="text-lg font-bold text-foreground">
                 Welcome to my Portfolio
               </h2>
               <Button
                 onClick={toggleTheme}
                 variant="ghost"
                 size="icon"
-                className="h-12 w-12 rounded-full bg-white/20 dark:bg-white/20 light:bg-[#333]/20"
+                className="h-12 w-12 rounded-full bg-muted"
               >
                 {theme === "dark" ? (
                   <Image
@@ -225,7 +225,7 @@ export default function Home() {
                 )}
               </Button>
             </div>
-            <p className="text-sm dark:text-white light:text-[#333]">
+            <p className="text-sm text-foreground">
               I'm a Computer Science major specializing in web development. Explore my
               projects and skills using the navigation below.
             </p>
@@ -243,7 +243,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs dark:text-white light:text-[#333]">
+              <span className="mt-1 text-xs text-foreground">
                 Home
               </span>
             </Link>
@@ -258,7 +258,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs dark:text-white light:text-[#333]">
+              <span className="mt-1 text-xs text-foreground">
                 Projects
               </span>
             </Link>
@@ -273,7 +273,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs dark:text-white light:text-[#333]">
+              <span className="mt-1 text-xs text-foreground">
                 Skills
               </span>
             </Link>
@@ -288,7 +288,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs dark:text-white light:text-[#333]">
+              <span className="mt-1 text-xs text-foreground">
                 Contact
               </span>
             </Link>
@@ -303,7 +303,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs dark:text-white light:text-[#333]">
+              <span className="mt-1 text-xs text-foreground">
                 About
               </span>
             </Link>
@@ -318,7 +318,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs dark:text-white light:text-[#333]"></span>
+              <span className="mt-1 text-xs text-foreground"></span>
             </Link>
 
             <Link href="/about" className="flex flex-col items-center">
@@ -331,7 +331,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs dark:text-white light:text-[#333]"></span>
+              <span className="mt-1 text-xs text-foreground"></span>
             </Link>
 
             <Link href="/about" className="flex flex-col items-center">
@@ -344,7 +344,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs dark:text-white light:text-[#333]"></span>
+              <span className="mt-1 text-xs text-foreground"></span>
             </Link>
             <Link href="/" className="flex flex-col items-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
@@ -469,7 +469,7 @@ export default function Home() {
           </div>
 
           {/* Bottom Status Bar - Empty as requested */}
-          <div className="bg-[#4682b4] p-2 text-center text-sm dark:bg-[#4682b4] light:bg-[#87ceeb]">
+          <div className="border-t border-border bg-background p-2 text-center text-sm">
             <p></p>
           </div>
         </div>
