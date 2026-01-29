@@ -18,7 +18,7 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false); // Track if we're on client-side
   const { theme, setTheme } = useTheme();
   const skyContainerRef = useRef<HTMLDivElement>(null);
-  const heroTitle = "Pete Thambundit Portfolio V 1.0.0";
+  const heroTitle = "Pete Thambundit's Portfolio V0.0.2";
   const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
 
   
@@ -185,7 +185,7 @@ export default function Home() {
             text={heroSubtitle}
 
 
-            initialDelay={6000}
+            initialDelay={4000}
             loop={false}
             className="mt-2 text-sm text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
           />
