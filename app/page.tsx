@@ -20,7 +20,7 @@ export default function Home() {
   const [isChatroomOpen, setIsChatroomOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const skyContainerRef = useRef<HTMLDivElement>(null);
-  const heroTitle = "Pete Thambundit's Portfolio V0.1.4";
+  const heroTitle = "Pete Thambundit's Portfolio V0.1.5";
   const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
 
   // List of Pokemon run GIFs

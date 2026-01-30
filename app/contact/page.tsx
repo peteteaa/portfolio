@@ -13,6 +13,11 @@ import PokemonAnimation from "@/components/PokemonAnimation"
 export default function ContactPage() {
   const [currentTime, setCurrentTime] = useState("")
   const [currentDate, setCurrentDate] = useState("")
+  const [name, setName] = useState("")
+  const [message, setMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
+  const [responseMessage, setResponseMessage] = useState("")
   const { theme } = useTheme()
 
   useEffect(() => {
@@ -97,9 +102,47 @@ export default function ContactPage() {
           <Card className="mb-4 border border-border bg-card p-4">
             <form 
               className="space-y-3"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                // Form submission logic can be added here if needed
+                if (!name.trim() || !message.trim() || isSubmitting) return;
+
+                setIsSubmitting(true);
+                setSubmitStatus("idle");
+                setResponseMessage("");
+
+                try {
+                  const fullMessage = `contact : "${name.trim()}" message : "${message.trim()}"`;
+                  
+                  const response = await fetch("https://agents.toolhouse.ai/e5f9236f-e9f4-4ec0-8de9-3c63e09d7ac4", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      message: fullMessage,
+                    }),
+                    mode: "cors",
+                  });
+
+                  if (response.ok) {
+                    // Don't display response on success, just clear the form
+                    setSubmitStatus("success");
+                    setName("");
+                    setMessage("");
+                    setResponseMessage("");
+                  } else {
+                    const errorText = await response.text();
+                    console.error("Response error:", response.status, errorText);
+                    setResponseMessage(`Error: ${response.status} - ${errorText}`);
+                    setSubmitStatus("error");
+                  }
+                } catch (error: any) {
+                  console.error("Error submitting form:", error);
+                  setResponseMessage(`Error: ${error.message || "Failed to send message"}`);
+                  setSubmitStatus("error");
+                } finally {
+                  setIsSubmitting(false);
+                }
               }}
             >
               <div className="space-y-1">
@@ -109,8 +152,11 @@ export default function ContactPage() {
                 <input
                   id="name"
                   type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="w-full rounded border border-input bg-background p-2 text-xs text-foreground focus:border-ring focus:outline-none"
                   placeholder="Your Name"
+                  required
                 />
               </div>
   
@@ -121,12 +167,35 @@ export default function ContactPage() {
                 <textarea
                   id="message"
                   rows={4}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   className="w-full rounded border border-input bg-background p-2 text-xs text-foreground focus:border-ring focus:outline-none"
                   placeholder="Hi, I'd like to discuss a project..."
+                  required
                 ></textarea>
               </div>
-              <Button className="w-full px-4 py-1 text-xs">
-                Send Message
+              {submitStatus === "success" && (
+                <div className="rounded border border-green-500 bg-green-50 p-2 text-xs text-green-700">
+                  Message sent successfully!
+                </div>
+              )}
+              {submitStatus === "error" && responseMessage && (
+                <div className="rounded border border-red-500 bg-red-50 p-2 text-xs text-red-700">
+                  <div className="font-bold mb-1">Error:</div>
+                  <div className="whitespace-pre-wrap">{responseMessage}</div>
+                </div>
+              )}
+              {submitStatus === "error" && !responseMessage && (
+                <div className="rounded border border-red-500 bg-red-50 p-2 text-xs text-red-700">
+                  Failed to send message. Please try again.
+                </div>
+              )}
+              <Button 
+                type="submit"
+                disabled={isSubmitting || !name.trim() || !message.trim()}
+                className="w-full px-4 py-1 text-xs"
+              >
+                {isSubmitting ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </Card>
