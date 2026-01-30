@@ -218,6 +218,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
           boxShadow: "inset -1px -1px 0px 0px #000000, inset 1px 1px 0px 0px #ffffff, inset -2px -2px 0px 0px #808080",
           fontFamily: "Fixedsys, 'Fixedsys Excelsior', 'Courier New', Courier, monospace",
           fontSize: "16px",
+          fontWeight: "bold",
           WebkitFontSmoothing: "none" as any,
           MozOsxFontSmoothing: "unset" as any,
           display: "block",
@@ -301,6 +302,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
                       MozOsxFontSmoothing: "unset" as any,
                       color: "#000",
                       lineHeight: "1.4",
+                      fontWeight: "bold",
                     }}
                   >
                     {isSystem ? (
@@ -336,7 +338,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
           {/* Input Area */}
           <form className="retro-chatroom" onSubmit={handleSendMessage} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-              <label htmlFor="username" style={{ fontSize: "11px", fontFamily: "Fixedsys, 'Fixedsys Excelsior', 'Courier New', Courier, monospace", WebkitFontSmoothing: "none" as any, MozOsxFontSmoothing: "unset" as any, color: "#000" }}>
+              <label htmlFor="username" style={{ fontSize: "11px", fontFamily: "Fixedsys, 'Fixedsys Excelsior', 'Courier New', Courier, monospace", fontWeight: "bold", WebkitFontSmoothing: "none" as any, MozOsxFontSmoothing: "unset" as any, color: "#000" }}>
                 Name:
               </label>
               <input
@@ -349,6 +351,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
                   padding: "2px 4px",
                   fontSize: "11px",
                   fontFamily: "Fixedsys, 'Fixedsys Excelsior', 'Courier New', Courier, monospace",
+                  fontWeight: "bold",
                   WebkitFontSmoothing: "none" as any,
                   MozOsxFontSmoothing: "unset" as any,
                   border: "1px inset #ccc",
@@ -369,6 +372,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
                 padding: "2px 4px",
                 fontSize: "11px",
                 fontFamily: "Fixedsys, 'Fixedsys Excelsior', 'Courier New', Courier, monospace",
+                fontWeight: "bold",
                 WebkitFontSmoothing: "none" as any,
                 MozOsxFontSmoothing: "unset" as any,
                 border: "1px inset #ccc",
@@ -384,6 +388,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
                 padding: "4px 12px",
                 fontSize: "11px",
                 fontFamily: "Fixedsys, 'Fixedsys Excelsior', 'Courier New', Courier, monospace",
+                fontWeight: "bold",
                 WebkitFontSmoothing: "none" as any,
                 MozOsxFontSmoothing: "unset" as any,
                 border: "1px outset #ccc",
@@ -446,6 +451,7 @@ function MessageContent({ message }: { message: string }) {
                 border: "1px inset #c0c0c0",
                 fontSize: "11px",
                 fontFamily: "Fixedsys, 'Fixedsys Excelsior', 'Courier New', Courier, monospace",
+                fontWeight: "bold",
                 WebkitFontSmoothing: "none" as any,
                 MozOsxFontSmoothing: "unset" as any,
                 color: "#000",
@@ -492,7 +498,7 @@ function MessageContent({ message }: { message: string }) {
       let processedLine = line;
       processedLine = processedLine.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #000;">$1</strong>');
       processedLine = processedLine.replace(/\*(.+?)\*/g, '<em style="color: #666;">$1</em>');
-      processedLine = processedLine.replace(/`(.+?)`/g, '<code style="background-color: #f0f0f0; padding: 1px 2px; border: 1px inset #c0c0c0; font-family: monospace; font-size: 11px; color: #000;">$1</code>');
+      processedLine = processedLine.replace(/`(.+?)`/g, '<code style="background-color: #f0f0f0; padding: 1px 2px; border: 1px inset #c0c0c0; font-family: monospace; font-size: 11px; font-weight: bold; color: #000;">$1</code>');
 
       // Links
       processedLine = processedLine.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: #0000ff; text-decoration: underline;" target="_blank" rel="noopener noreferrer">$1</a>');
@@ -536,5 +542,5 @@ function MessageContent({ message }: { message: string }) {
     return <>{elements}</>;
   };
 
-  return <div style={{ marginTop: "2px", color: "#000" }}>{renderMarkdown(message)}</div>;
+  return <div style={{ marginTop: "2px", color: "#000", fontWeight: "bold" }}>{renderMarkdown(message)}</div>;
 }
