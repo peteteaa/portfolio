@@ -95,7 +95,13 @@ export default function ContactPage() {
           </div>
 
           <Card className="mb-4 border border-border bg-card p-4">
-            <form className="space-y-3">
+            <form 
+              className="space-y-3"
+              onSubmit={(e) => {
+                e.preventDefault();
+                // Form submission logic can be added here if needed
+              }}
+            >
               <div className="space-y-1">
                 <label htmlFor="name" className="block text-xs font-medium text-foreground">
                   Name
