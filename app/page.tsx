@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import TextType from "@/components/TextType";
+import RetroChatroom from "@/components/RetroChatroom";
 
 
 export default function Home() {
@@ -16,9 +17,10 @@ export default function Home() {
   const [secondPokemonGif, setSecondPokemonGif] = useState<string | null>(null);
   const [showSecondPokemon, setShowSecondPokemon] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isChatroomOpen, setIsChatroomOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const skyContainerRef = useRef<HTMLDivElement>(null);
-  const heroTitle = "Pete Thambundit's Portfolio V0.0.3";
+  const heroTitle = "Pete Thambundit's Portfolio V0.1.3";
   const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
 
   // List of Pokemon run GIFs
@@ -373,7 +375,11 @@ export default function Home() {
             <div className="flex items-center gap-2">
               <div className="h-12 w-12 rounded-md bg-white/20"></div>
               
-              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-white p-1">
+              <button
+                onClick={() => setIsChatroomOpen(true)}
+                className="flex h-12 w-12 items-center justify-center rounded-md bg-white p-1 hover:opacity-80 transition-opacity cursor-pointer"
+                aria-label="Open Chatroom"
+              >
                 <Image
                   src="/images/pokeball.png"
                   width={40}
@@ -381,7 +387,7 @@ export default function Home() {
                   alt="Pokeball"
                   className="pixelated"
                 />
-              </div>
+              </button>
 
               <Link
                 href="/projects"
@@ -463,8 +469,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="flex h-12 w-8 items-center justify-center rounded-md bg-[#333]/20">
-              <span className="text-xl">→</span>
+            <div>
             </div>
           </div>
 
@@ -474,6 +479,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <RetroChatroom isOpen={isChatroomOpen} onClose={() => setIsChatroomOpen(false)} />
     </div>
   );
 }

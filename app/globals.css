@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Classicy CSS - styles are bundled with components */
+/* If needed, import styles from the component library */
+/* @import 'classicy/dist/classicy.css'; */
+
 @layer base {
   :root {
     --background: 195 60% 82%;
@@ -61,6 +65,25 @@
 /* Retro Font */
 .font-retro {
   font-family: "Press Start 2P", sans-serif;
+}
+
+/* Fixedsys Font for Chatroom */
+@font-face {
+  font-family: 'Fixedsys';
+  src: url('/fonts/FSEX300.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fixedsys styling - designed for 16px with no antialiasing */
+.fixedsys-font {
+  font-family: 'Fixedsys', 'Fixedsys Excelsior', 'Courier New', Courier, monospace;
+  font-size: 16px;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+  text-rendering: optimizeSpeed;
 }
 
 /* Pixelated Images */
