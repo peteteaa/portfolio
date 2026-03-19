@@ -109,6 +109,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
         method,
         headers: {
           "Content-Type": "application/json",
+          "X-Toolhouse-Api-Key": process.env.NEXT_PUBLIC_TOOLHOUSE_API_KEY || "",
         },
         body: JSON.stringify({ message: userMessage }),
         signal: abortControllerRef.current.signal,

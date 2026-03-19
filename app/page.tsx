@@ -112,8 +112,8 @@ export default function Home() {
   };
 
   return (
-<div className="flex min-h-screen flex-col bg-background text-foreground font-retro cursor-custom">
-{/* 3DS Top Screen */}
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-retro cursor-custom">
+      {/* 3DS Top Screen */}
       <div
         ref={skyContainerRef}
         className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]"
@@ -435,21 +435,6 @@ export default function Home() {
                   />
                 </div>
                 <span className="mt-1 text-xs">LinkedIn</span>
-              </Link>
-              <Link
-                href="mailto:pthambundit@icloud.com"
-                className="flex flex-col items-center"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-transparent">
-                  <Image
-                    src="/images/mail-icon.png"
-                    width={24}
-                    height={24}
-                    alt="Email"
-                    className="pixelated"
-                  />
-                </div>
-                <span className="mt-1 text-xs">Email</span>
               </Link>
               <Link
                 href="https://www.instagram.com/pete_teaa/"
