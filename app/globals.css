@@ -67,6 +67,23 @@
   font-family: "Press Start 2P", sans-serif;
 }
 
+/* Nintendo DS BIOS font */
+@font-face {
+  font-family: 'Nintendo DS BIOS';
+  src: url('/fonts/Nintendo-DS-BIOS.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-libre-caslon {
+  font-family: 'Nintendo DS BIOS', Georgia, serif;
+}
+
+.font-nintendo-ds-bios {
+  font-family: 'Nintendo DS BIOS', Georgia, serif;
+}
+
 /* Fixedsys Font for Chatroom */
 @font-face {
   font-family: 'Fixedsys';
@@ -146,4 +163,109 @@ html, body, * {
   background-repeat: no-repeat;
   pointer-events: none;
   z-index: 10;
+}
+
+/* DS Frame layout and screen masks */
+.ds-container {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 480px;
+}
+
+.screens-content {
+  position: relative;
+  z-index: 10;
+}
+
+.top-screen-content {
+  /* approximate position/proportions for the top screen area */
+  position: absolute;
+  top: 4.5%;
+  left: 7.5%;
+  width: 85%;
+  height: 28%;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.bottom-screen-content {
+  position: absolute;
+  top: 56%;
+  left: 7.5%;
+  width: 85%;
+  height: 36%;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.ds-frame-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* subtle screen glow and scanlines */
+.screen-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(0,255,200,0.04), rgba(0,0,0,0));
+  mix-blend-mode: screen;
+}
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+/* ensure pokemon sprite stays inside top screen */
+.pokemon-sprite { max-width: 60%; }
+
+/* small interactive visual feedback for physical buttons (can be placed later) */
+.ds-physical-button { pointer-events: auto; }
+
+/* DS-style portfolio landing frame */
+.ds-frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  border: 22px solid #1c1c1c;
+  border-radius: 2.5rem;
+  background: radial-gradient(circle at top, #2c2c2c, #111111 65%);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.ds-frame::before {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16rem;
+  height: 0.7rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+}
+
+.ds-frame::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 1rem;
+  width: 6rem;
+  height: 0.7rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
 }

@@ -42,6 +42,7 @@ if (typeof document !== 'undefined' && !document.getElementById(KEYFRAMES_ID)) {
 }
 
 interface ProfileCardProps {
+  href?: string;
   avatarUrl?: string;
   iconUrl?: string;
   grainUrl?: string;
@@ -73,6 +74,7 @@ interface TiltEngine {
 }
 
 const ProfileCardComponent: React.FC<ProfileCardProps> = ({
+  href,
   avatarUrl = ' ',
   iconUrl = ' ',
   grainUrl = ' ',
@@ -459,7 +461,11 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
     borderRadius: cardRadius,
     pointerEvents: 'none'
   };
-
+const cardContent = (
+    <div>
+      {/* your existing JSX */}
+    </div>
+  );
   return (
     <div
       ref={wrapRef}
@@ -561,11 +567,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                   }}
                 />
               )}
-              <div className="text-sm text-white drop-shadow-lg mb-2">
-                <span className="font-semibold">@{handle}</span>
-                <span className="mx-2">•</span>
-                <span>{status}</span>
-              </div>
+
               {onContactClick && (
                 <button
                   onClick={handleContactClick}
@@ -578,13 +580,11 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
           )}
 
           {/* Details content */}
-          <div className="mt-auto text-center">
-            <h3 className="text-xl font-bold text-white mb-1 drop-shadow-lg">{name}</h3>
-            <p className="text-sm text-white drop-shadow-lg">{title}</p>
-          </div>
+          
         </div>
       </div>
     </div>
+    
   );
 };
 

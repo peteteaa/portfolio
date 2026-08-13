@@ -73,21 +73,47 @@ function getTCGplayerUrl(card: TCGdexCard): string {
   const q = setName ? `${name}+${setName}` : name
   return `${TCGPLAYER_SEARCH}?q=${q}`
 }
+const CARD_PROPS = [//carasouel cards
+  {
+    avatarUrl: "https://tcgplayer-cdn.tcgplayer.com/product/478065_in_1000x1000.jpg",
+    name: "Pokemon Collector",
+    title: "Card Enthusiast",
+    handle: "the_pokemon_collector",
+    status: "Collecting Pokemon Cards",
+    showUserInfo: false,
+    behindGlowEnabled: true,
+    iconUrl: "/images/pokeball.png",
+    grainUrl: "https://www.transparenttextures.com/patterns/grain.png",
+  },{
+    avatarUrl: "https://tcgplayer-cdn.tcgplayer.com/product/478071_in_1000x1000.jpg",
+    name: "Pokemon Collector",
+    title: "Card Enthusiast",
+    handle: "the_pokemon_collector",
+    status: "Collecting Pokemon Cards",
+    showUserInfo: false,
+    behindGlowEnabled: true,
+    iconUrl: "/images/pokeball.png",
+    grainUrl: "https://www.transparenttextures.com/patterns/grain.png",
+  },{
+    avatarUrl: "https://tcgplayer-cdn.tcgplayer.com/product/113763_in_1000x1000.jpg",
 
-const CARD_PROPS = {
-  avatarUrl: "https://assets.tcgdex.net/en/sv/sv08/238/high.png",
-  name: "Pokemon Collector",
-  title: "Card Enthusiast",
-  handle: "the_pokemon_collector",
-  status: "Collecting Pokemon Cards  ",
-  showUserInfo: false,
-  behindGlowEnabled: true,
-  iconUrl: "/images/pokeball.png",
-  grainUrl: "https://www.transparenttextures.com/patterns/grain.png",
-}
+    grainUrl: "https://www.transparenttextures.com/patterns/grain.png",
+  },{//Pikachu 
+    avatarUrl: "http://storage.googleapis.com/images.pricecharting.com/a5kgluzasqscrp5q/1600.jpg",
+    iconUrl: "/images/pokeball.png",
+    grainUrl: "https://www.transparenttextures.com/patterns/grain.png",
+  },
+  {//Blastoise
+    avatarUrl: "https://tcgplayer-cdn.tcgplayer.com/product/517046_in_600x600.jpg",
+    iconUrl: "/images/pokeball.png",
+    grainUrl: "https://www.transparenttextures.com/patterns/grain.png",
+  },
 
+];
+
+const CARD_COUNT = CARD_PROPS.length;
 const SCROLL_THRESHOLD = 320 // pixels of scroll before switching focus (higher = slower)
-const CARD_COUNT = 3
+
 
 function goToPrev(index: number) {
   return (index - 1 + CARD_COUNT) % CARD_COUNT
@@ -150,18 +176,28 @@ export default function PokemonCardsPage() {
     setImageLoaded(false)
     setSearchLoading(true)
     try {
-      const setsRes = await fetch(TCGDEX_SETS)
-      if (!setsRes.ok) throw new Error("Failed to load sets")
-      const setsList: SetListItem[] = await setsRes.json()
-      const setsWithCards = setsList.filter((s) => (s.cardCount?.total ?? 0) > 0)
-      if (setsWithCards.length === 0) {
-        setSearchError("No sets found")
-        return
-      }
-      const randomSet = setsWithCards[Math.floor(Math.random() * setsWithCards.length)]
-      const setRes = await fetch(`${TCGDEX_SETS}/${randomSet.id}`)
-      if (!setRes.ok) throw new Error("Failed to load set")
-      const setData: SetWithCards = await setRes.json()
+    const setsRes = await fetch(TCGDEX_SETS)
+    if (!setsRes.ok) throw new Error("Failed to load sets")
+
+    const setsList: SetListItem[] = await setsRes.json()
+
+    const setsWithCards = setsList.filter(
+      (s) => (s.cardCount?.total ?? 0) > 0
+    )
+
+    if (setsWithCards.length === 0) {
+      setSearchError("No sets found")
+      return
+    }
+
+    const randomSet =
+      setsWithCards[Math.floor(Math.random() * setsWithCards.length)]
+
+    const setRes = await fetch(`${TCGDEX_SETS}/${randomSet.id}`)
+
+    if (!setRes.ok) throw new Error("Failed to load set")
+
+    const setData: SetWithCards = await setRes.json()
       const cards = setData.cards?.filter((c) => c.id) ?? []
       if (cards.length === 0) {
         setSearchError("No cards in set")
@@ -249,25 +285,30 @@ export default function PokemonCardsPage() {
   const slotWidth = "clamp(200px, 28vw, 280px)"
   const sideCardWidth = "clamp(120px, 18vw, 180px)"
   const getOffset = (cardIndex: number) => {
-    const raw = (cardIndex - focusedIndex + CARD_COUNT) % CARD_COUNT
-    return raw === 2 ? -1 : raw // 0 -> 0, 1 -> 1, 2 -> -1 (left)
-  }
+    let offset = (cardIndex - focusedIndex + CARD_COUNT) % CARD_COUNT;
+
+    if (offset > CARD_COUNT / 2) {
+      offset -= CARD_COUNT;
+    }
+
+    return offset;
+  };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Pokemon Cards</h1>
-      <p className="mb-4">A page about Pokemon card collecting and favorite pulls.</p>
+    <div className="p-8 font-nintendo-ds-bios">
+      <h1 className="text-6xl font-bold mb-4">Pete's Pokemon Collection!</h1>
+      <p className="text-3xl">Check out Pete's top hits.</p>
 
       <div
         ref={wheelRef}
         tabIndex={0}
         role="group"
         aria-label="Pokemon cards carousel"
-        className="relative py-8 min-h-[380px] outline-none overflow-hidden"
+        className="relative py-8 min-h-[380px] outline-none overflow-visible"
         style={{ perspective: "1000px" }}
       >
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          {[0, 1, 2].map((cardIndex) => {
+          {CARD_PROPS.map((cardProps, cardIndex) => {
             const offset = getOffset(cardIndex)
             const isCenter = offset === 0
             const scale = isCenter ? 1 : 0.85
@@ -285,24 +326,21 @@ export default function PokemonCardsPage() {
                 }}
               >
                 <ProfileCard
-                  {...CARD_PROPS}
-                  className="w-full aspect-[5/7]"
+                  {...cardProps}
+                  className="w-full aspect-[5.1/7]"
                 />
+
               </div>
             )
           })}
         </div>
       </div>
 
-      {/* Scroll wheel hint */}
-      <p className="text-center text-sm text-gray-500 mb-4">
-        Scroll over the cards or use arrow keys to switch focus
-      </p>
 
       {/* Search card */}
       <section className="mt-12 border-t border-gray-200 pt-8" aria-label="Search card">
-        <h2 className="text-lg font-semibold mb-3">Search a card</h2>
-        <div className="flex flex-wrap items-center gap-2 mb-4">
+        <h2 className="text-3xl font-nintendo-ds-bios mb-3">Search a card</h2>
+        <div className="flex flex-wrap items-center gap-2 text-2xl">
           <input
             type="search"
             value={searchQuery}
@@ -352,11 +390,11 @@ export default function PokemonCardsPage() {
           <p className="text-red-600 text-sm mb-4" role="alert">{searchError}</p>
         )}
         {searchedCard && (
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-4 mt-8">
             <div className="w-full max-w-[280px] aspect-[5/7] relative">
               {!imageLoaded && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-100 rounded-[30px] animate-pulse" aria-hidden="true">
-                  <span className="text-gray-400 text-sm">Loading image…</span>
+                  <span className="text-gray-400 text-xl">Loading image…</span>
                 </div>
               )}
               <ProfileCard
@@ -378,7 +416,7 @@ export default function PokemonCardsPage() {
                 onError={() => setImageLoaded(true)}
               />
             </div>
-            <div className="text-sm text-gray-700 text-center space-y-1">
+            <div className="text-xl text-gray-700 text-center space-y-1">
               {searchedCard.set?.name && (
                 <p><strong>Set:</strong> {searchedCard.set.name}</p>
               )}

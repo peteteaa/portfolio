@@ -112,7 +112,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground font-retro cursor-custom">
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-nintendo-ds-bios text-3xl md:text-6xl leading-relaxed cursor-custom">
       {/* 3DS Top Screen */}
       <div
         ref={skyContainerRef}
@@ -131,7 +131,7 @@ export default function Home() {
 
         {/* Primary Pokemon GIF */}
         <div
-          className="absolute z-20 h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40"
+          className="absolute z-20 h-24 w-24 md:h-32 md:w-32 xl:h-40 xl:w-40"
           style={{
             left: `${jolteonPosition}px`,
             bottom: "0",
@@ -150,7 +150,7 @@ export default function Home() {
         {/* Second Pokemon GIF (shown conditionally) */}
         {showSecondPokemon && secondPokemonGif && (
           <div
-            className="absolute z-10 h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40"
+            className="absolute z-10 h-24 w-24 md:h-32 md:w-32 xl:h-40 xl:w-40"
             style={{
               left: `${jolteonPosition - 150}px`,
               bottom: "0",
@@ -173,9 +173,7 @@ export default function Home() {
             as="h1"
             text={heroTitle}
             loop={false}
-
-
-            className="text-2xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
+            className="text-4xl md:text-6xl font-bold text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-nintendo-ds-bios"
             cursorClassName="text-white"
             hideCursorWhileTyping
           />
@@ -184,11 +182,9 @@ export default function Home() {
           <TextType
             as="p"
             text={heroSubtitle}
-
-
             initialDelay={4000}
             loop={false}
-            className="mt-2 text-sm text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
+            className="mt-2 text-xl md:text-2xl text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-nintendo-ds-bios"
           />
         </div>
       </div>
@@ -197,10 +193,10 @@ export default function Home() {
       <div className="relative flex flex-1 flex-col bg-background">
         {/* Main Content Area */}
         <div className="flex-1 p-4">
-          <div className="mb-6 rounded-lg border border-border bg-card p-4 backdrop-blur-sm">
+          <div className="mb-6 rounded-lg border border-border bg-card p-4 backdrop-blur-xl">
             <div className="mb-2 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-foreground">
-                Welcome to my Portfolio
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground font-nintendo-ds-bios">
+                Welcome to my Portfolio!
               </h2>
               <Button
                 onClick={toggleTheme}
@@ -227,8 +223,8 @@ export default function Home() {
                 )}
               </Button>
             </div>
-            <p className="text-sm text-foreground">
-              I'm a Computer Science major specializing in web development. Explore my
+            <p className="text-base md:text-2xl text-foreground font-nintendo-ds-bios">
+              I'm a Computer Science major specializing in web development. Feel free to explore my
               projects and skills using the navigation below.
             </p>
           </div>
@@ -245,7 +241,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs text-foreground">
+              <span className="mt-1 text-xl text-foreground">
                 Home
               </span>
             </Link>
@@ -260,7 +256,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs text-foreground">
+              <span className="mt-1 text-xl text-foreground">
                 Projects
               </span>
             </Link>
@@ -275,7 +271,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs text-foreground">
+              <span className="mt-1 text-xl text-foreground">
                 Skills
               </span>
             </Link>
@@ -290,7 +286,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs text-foreground">
+              <span className="mt-1 text-xl text-foreground">
                 Contact
               </span>
             </Link>
@@ -305,7 +301,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs text-foreground">
+              <span className="mt-1 text-xl text-foreground">
                 About
               </span>
             </Link>
@@ -320,7 +316,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs text-foreground"></span>
+              <span className="mt-1 text-xl text-foreground"></span>
             </Link>
 
             <Link href="/about" className="flex flex-col items-center">
@@ -333,7 +329,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs text-foreground"></span>
+              <span className="mt-1 text-xl text-foreground"></span>
             </Link>
 
             <Link href="/about" className="flex flex-col items-center">
@@ -346,7 +342,7 @@ export default function Home() {
                   className="pixelated"
                 />
               </div>
-              <span className="mt-1 text-xs text-foreground"></span>
+              <span className="mt-1 text-xl text-foreground"></span>
             </Link>
             <Link href="/" className="flex flex-col items-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
@@ -362,7 +358,7 @@ export default function Home() {
             {Array.from({ length: 0 }).map((_, i) => (
               <div key={i} className="flex flex-col items-center">
                 <div className="h-16 w-16 rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/10 folder-select"></div>
-                <span className="mt-1 text-xs opacity-0">Empty</span>
+                <span className="mt-1 text-xl text-foreground">Empty</span>
               </div>
             ))}
           </div>
@@ -418,7 +414,7 @@ export default function Home() {
                     className="pixelated"
                   />
                 </div>
-                <span className="mt-1 text-xs">GitHub</span>
+                <span className="mt-1 text-lg text-foreground">GitHub</span>
               </Link>
               <Link
                 href="https://www.linkedin.com/in/pete-thambundit-91b740324/"
@@ -434,7 +430,7 @@ export default function Home() {
                     className="pixelated"
                   />
                 </div>
-                <span className="mt-1 text-xs">LinkedIn</span>
+                <span className="mt-1 text-lg text-foreground">LinkedIn</span>
               </Link>
               <Link
                 href="https://www.instagram.com/pete_teaa/"
@@ -450,7 +446,7 @@ export default function Home() {
                     className="pixelated"
                   />
                 </div>
-                <span className="mt-1 text-xs">Instagram</span>
+                <span className="mt-1 text-xl">Instagram</span>
               </Link>
             </div>
 
@@ -459,7 +455,7 @@ export default function Home() {
           </div>
 
           {/* Bottom Status Bar - Empty as requested */}
-          <div className="border-t border-border bg-background p-2 text-center text-sm">
+          <div className="border-t border-border bg-background p-2 text-center text-xl">
             <p></p>
           </div>
         </div>

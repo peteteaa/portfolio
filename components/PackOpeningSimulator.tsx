@@ -9,8 +9,7 @@ const TCGDEX_SERIES_TCGP = `${TCGDEX_BASE}/series/tcgp`
 const TCGDEX_CARDS = `${TCGDEX_BASE}/cards`
 const TCGPLAYER_PRODUCT = "https://www.tcgplayer.com/product"
 const TCGPLAYER_SEARCH = "https://www.tcgplayer.com/search/pokemon/product"
-const PACK_IMAGE =
-  "https://i.ebayimg.com/00/s/MTUwMVg4Mzk=/z/ZLgAAOSwJ0ZgsRYQ/$_1.JPG?set_id=880000500F"
+const PACK_IMAGE = "/images/packart.png"
 
 type SetListItem = { id: string; name: string; cardCount?: { total: number } }
 type SetCard = { id: string; name: string; image?: string }
@@ -421,9 +420,12 @@ export default function PackOpeningSimulator() {
 
   return (
     <section className="mt-12 border-t border-gray-700 pt-8 bg-gray-900/40 rounded-xl p-6 -mx-2">
-      <h2 className="text-lg font-semibold mb-3 text-white">Pack opening</h2>
-      <p className="text-sm text-gray-400 mb-4">
-        {setName && setId ? `${setName} (${setId}). ` : ""}Click &quot;Open pack&quot; to load, then click the pack to open. Click the stack to reveal each card.
+      <h2 className="text-3xl font-semibold mb-3 text-white">Pack opening</h2>
+     
+      <p className="text-2xl text-black mb-4">
+        Your pack is from: {setName && setId ? `${setName} (${setId}). ` : ""} 
+        <br />
+        Click &quot;Open pack&quot; to load, then click the pack to open. Click the stack to reveal each card.
       </p>
 
       <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -440,7 +442,7 @@ export default function PackOpeningSimulator() {
           <button
             type="button"
             onClick={buildPack}
-            className="rounded-lg bg-gray-600 text-white px-4 py-2 font-medium hover:bg-gray-500"
+            className="rounded-lg bg-gray-600 text-white px-5 py-3 font-2xl hover:bg-gray-500"
           >
             New pack
           </button>
@@ -448,7 +450,7 @@ export default function PackOpeningSimulator() {
       </div>
 
       {phase === "loading" && (
-        <p className="text-gray-400">Loading pack...</p>
+        <p className="text-gray-400 font-6xl">Loading pack...</p>
       )}
 
       {(phase === "ready" || phase === "opening" || phase === "open") && packCards.length > 0 && (
@@ -461,11 +463,13 @@ export default function PackOpeningSimulator() {
             onMouseEnter={() => handlePackHover(true)}
             onMouseLeave={() => handlePackHover(false)}
             onKeyDown={(e) => e.key === "Enter" && phase === "ready" && handlePackClick()}
-            className="relative w-44 h-[20rem] cursor-pointer select-none rounded-lg overflow-hidden shadow-xl"
+            className="relative cursor-pointer select-none rounded-lg overflow-hidden shadow-xl"
             style={{
               visibility: phase === "open" ? "hidden" : "visible",
               perspective: "400px",
               transformStyle: "preserve-3d",
+              width: "clamp(200px, 30vw, 320px)",
+              aspectRatio: "768 / 1371",
             }}
           >
             <div
@@ -483,7 +487,7 @@ export default function PackOpeningSimulator() {
                 alt="Pack"
                 loading="eager"
                 decoding="async"
-                className="block w-full h-full min-w-0 min-h-0 object-contain object-top bg-gray-800"
+                className="block w-full h-full min-w-0 min-h-0 object-cover object-center bg-gray-800"
               />
             </div>
             <div
@@ -498,7 +502,7 @@ export default function PackOpeningSimulator() {
                 alt=""
                 loading="eager"
                 decoding="async"
-                className="block w-full h-full min-w-0 min-h-0 object-contain object-center bg-gray-800"
+                className="block w-full h-full min-w-0 min-h-0 object-cover object-center bg-gray-800"
               />
             </div>
           </div>
@@ -508,7 +512,7 @@ export default function PackOpeningSimulator() {
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
             style={{
               visibility: phase === "open" ? "visible" : "hidden",
-              width: "clamp(180px, 24vw, 260px)",
+              width: "clamp(200px, 30vw, 320px)",
             }}
           >
             {packCards.map((card, i) => (
@@ -519,49 +523,54 @@ export default function PackOpeningSimulator() {
                 }}
                 role="button"
                 tabIndex={0}
-                onClick={phase === "open" && revealedIndex === i ? handleStackClick : undefined}
+                onClick={phase === "open" && revealedIndex === i && revealedIndex < packCards.length - 1 ? handleStackClick : undefined}
                 onKeyDown={(e) =>
-                  phase === "open" && revealedIndex === i && e.key === "Enter" && handleStackClick()
+                  phase === "open" && revealedIndex === i && revealedIndex < packCards.length - 1 && e.key === "Enter" && handleStackClick()
                 }
                 onTouchStart={
-                  phase === "open" && revealedIndex === i ? handleStackTouchStart : undefined
+                  phase === "open" && revealedIndex === i && revealedIndex < packCards.length - 1 ? handleStackTouchStart : undefined
                 }
                 onTouchEnd={
-                  phase === "open" && revealedIndex === i ? handleStackTouchEnd : undefined
+                  phase === "open" && revealedIndex === i && revealedIndex < packCards.length - 1 ? handleStackTouchEnd : undefined
                 }
-                className="absolute w-full aspect-[5/7] rounded-lg overflow-hidden shadow-2xl cursor-pointer select-none touch-manipulation"
+                className="absolute flex flex-col rounded-lg overflow-hidden shadow-2xl cursor-pointer select-none touch-manipulation bg-gray-800"
                 style={{
                   zIndex: phase === "open" && revealedIndex === i ? 100 : i,
                   pointerEvents: phase === "open" && revealedIndex >= i ? "auto" : "none",
+                  width: "clamp(200px, 30vw, 320px)",
                 }}
               >
-                <img
-                  src={getHighResImageUrl(card.image)}
-                  alt={card.name}
-                  className="w-full h-full object-contain bg-gray-800"
-                />
-                {isSpecialOrUltraRare(card.rarity) && (
-                  <div
-                    className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-40"
-                    style={{
-                      background:
-                        "linear-gradient(125deg, transparent 40%, rgba(255,200,100,0.4) 50%, transparent 60%)",
-                      backgroundSize: "200% 200%",
-                    }}
+                <div className="relative w-full" style={{ aspectRatio: "5 / 7" }}>
+                  <img
+                    src={getHighResImageUrl(card.image)}
+                    alt={card.name}
+                    className="absolute inset-0 w-full h-full object-cover object-center bg-gray-800"
                   />
-                )}
+                  {isSpecialOrUltraRare(card.rarity) && (
+                    <div
+                      className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-40"
+                      style={{
+                        background:
+                          "linear-gradient(125deg, transparent 40%, rgba(255,200,100,0.4) 50%, transparent 60%)",
+                        backgroundSize: "200% 200%",
+                      }}
+                    />
+                  )}
+                </div>
                 {(revealedIndex > i || revealedIndex === i) && (
-                  <div className="absolute inset-0 flex flex-col justify-end p-2 bg-gradient-to-t from-black/90 to-transparent text-white text-xs pointer-events-none">
-                    <span className="font-semibold truncate">{card.name}</span>
-                    {card.rarity && <span className="opacity-90">{card.rarity}</span>}
-                    {card.pricing?.cardmarket?.avg != null && (
-                      <span>€{Number(card.pricing.cardmarket.avg).toFixed(2)}</span>
-                    )}
+                  <div className="p-3 bg-gray-900/95 text-white text-lg pointer-events-none">
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <span className="font-semibold truncate">{card.name}</span>
+                      {card.rarity && <span className="font-semibold truncate text-lg">{card.rarity}</span>}
+                      {card.pricing?.cardmarket?.avg != null && (
+                        <span className="text-lg">${Number(card.pricing.cardmarket.avg).toFixed(2)}</span>
+                      )}
+                    </div>
                     <a
                       href={getTCGplayerUrl(card)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-amber-400 hover:underline mt-1 pointer-events-auto"
+                      className="text-amber-400 hover:underline pointer-events-auto text-lg"
                       onClick={(e) => e.stopPropagation()}
                     >
                       TCGplayer →
@@ -573,9 +582,9 @@ export default function PackOpeningSimulator() {
           </div>
 
           {phase === "open" && (
-            <p className="mt-64 text-gray-400 text-sm">
+            <p className="mt-64 text-black text-lg">
               {revealedIndex < packCards.length
-                ? "Click or swipe left on the top card to reveal"
+                ? "Click on the top card to reveal your cards!"
                 : "Pack complete"}
             </p>
           )}
