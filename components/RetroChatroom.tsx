@@ -10,7 +10,17 @@ export interface ChatMessage {
   timestamp: Date;
   type?: "user" | "system" | "assistant";
   isStreaming?: boolean;
+  /** Local failure notice — shown in the log, never replayed back to the model. */
+  isError?: boolean;
 }
+
+/**
+ * Message ids key the React list and route streaming chunks to the right bubble,
+ * so they have to be unique. Date.now() was not: two messages in the same
+ * millisecond collided and the stream appended to the wrong message.
+ */
+let messageCounter = 0;
+const newMessageId = () => `${Date.now()}-${messageCounter++}`;
 
 interface RetroChatroomProps {
   isOpen: boolean;
@@ -30,7 +40,6 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
   const [inputValue, setInputValue] = useState("");
   const [username, setUsername] = useState("Trainer");
   const [mounted, setMounted] = useState(false);
-  const [runId, setRunId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,6 +47,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
 
   useEffect(() => {
     setMounted(true);
+    return () => abortControllerRef.current?.abort();
   }, []);
 
   const scrollToBottom = () => {
@@ -67,9 +77,8 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
     setIsLoading(true);
 
     // Add user message
-    const userMessageId = Date.now().toString();
     const newUserMessage: ChatMessage = {
-      id: userMessageId,
+      id: newMessageId(),
       username,
       message: userMessage,
       timestamp: new Date(),
@@ -79,7 +88,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
     setMessages((prev) => [...prev, newUserMessage]);
 
     // Create assistant message placeholder
-    const assistantMessageId = (Date.now() + 1).toString();
+    const assistantMessageId = newMessageId();
     const assistantMessage: ChatMessage = {
       id: assistantMessageId,
       username: "PeteBot",
@@ -98,29 +107,34 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
 
     abortControllerRef.current = new AbortController();
 
+    // Everything the model should see: prior chat turns plus the new message.
+    const history = [
+      ...messages
+        .filter((msg) => msg.type === "user" || msg.type === "assistant")
+        // Error notices are ours, not the model's. Replaying them makes the bot
+        // echo its own failures back and spiral.
+        .filter((msg) => !msg.isError && !msg.isStreaming)
+        .filter((msg) => msg.message.trim())
+        .map((msg) => ({
+          role: msg.type === "assistant" ? ("assistant" as const) : ("user" as const),
+          content: msg.message,
+        })),
+      { role: "user" as const, content: userMessage },
+    ];
+
     try {
-      const url = runId
-        ? `https://agents.toolhouse.ai/04170d98-f085-4577-8433-85af773afb33/${runId}`
-        : `https://agents.toolhouse.ai/04170d98-f085-4577-8433-85af773afb33`;
-
-      const method = runId ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
+      const response = await fetch("/api/chat", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Toolhouse-Api-Key": process.env.NEXT_PUBLIC_TOOLHOUSE_API_KEY || "",
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({ messages: history }),
         signal: abortControllerRef.current.signal,
       });
 
-      // Get runId from header if it's the first request
-      if (!runId && response.headers.has("X-Toolhouse-Run-ID")) {
-        const newRunId = response.headers.get("X-Toolhouse-Run-ID");
-        if (newRunId) {
-          setRunId(newRunId);
-        }
+      if (!response.ok) {
+        const detail = await response.text().catch(() => "");
+        throw new Error(detail || `Chat request failed (${response.status})`);
       }
 
       if (!response.body) {
@@ -153,11 +167,22 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
       // Mark streaming as complete
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === assistantMessageId ? { ...msg, isStreaming: false } : msg
+          msg.id === assistantMessageId
+            ? accumulatedMessage.trim()
+              ? { ...msg, isStreaming: false }
+              : {
+                  ...msg,
+                  message: "Error: Empty response from the model.",
+                  isStreaming: false,
+                  isError: true,
+                }
+            : msg
         )
       );
     } catch (error: any) {
       if (error.name === "AbortError") {
+        // Clear the placeholder, otherwise it spins on "..." forever.
+        setMessages((prev) => prev.filter((msg) => msg.id !== assistantMessageId));
         return;
       }
       console.error("Error sending message:", error);
@@ -166,8 +191,9 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
           msg.id === assistantMessageId
             ? {
                 ...msg,
-                message: "Error: Failed to get response. Please try again.",
+                message: `Error: ${error.message || "Failed to get response. Please try again."}`,
                 isStreaming: false,
+                isError: true,
               }
             : msg
         )
@@ -433,7 +459,7 @@ function MessageContent({ message }: { message: string }) {
   const renderMarkdown = (text: string) => {
     // Split by lines and process markdown
     const lines = text.split("\n");
-    const elements: JSX.Element[] = [];
+    const elements: React.JSX.Element[] = [];
     let inCodeBlock = false;
     let codeBlockContent: string[] = [];
 

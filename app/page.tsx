@@ -7,8 +7,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import TextType from "@/components/TextType";
 import RetroChatroom from "@/components/RetroChatroom";
+import EvangelionBoot from "@/components/evaIntro";
 
-
+  const pokemonRunGifs = [
+    "/images/jolteon-run.gif",
+    "/images/umbreon-run.gif",
+    "/images/eevee-run.gif",
+    "/images/leafeon-run.gif",
+    "/images/spoink-run.gif",
+  ];
 export default function Home() {
   const [currentTime, setCurrentTime] = useState("");
   const [currentDate, setCurrentDate] = useState("");
@@ -20,17 +27,11 @@ export default function Home() {
   const [isChatroomOpen, setIsChatroomOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const skyContainerRef = useRef<HTMLDivElement>(null);
-  const heroTitle = "Pete Thambundit's Portfolio V0.1.6";
+  const heroTitle = "Pete Thambundit's Portfolio V0.2.6";
   const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
 
   // List of Pokemon run GIFs
-  const pokemonRunGifs = [
-    "/images/jolteon-run.gif",
-    "/images/umbreon-run.gif",
-    "/images/eevee-run.gif",
-    "/images/leafeon-run.gif",
-    "/images/spoink-run.gif",
-  ];
+
 
   const updateDateTime = () => {
     const now = new Date();
@@ -112,6 +113,9 @@ export default function Home() {
   };
 
   return (
+    <>
+    {/* <Evangelion Boot /> */}
+    
     <div className="flex min-h-screen flex-col bg-background text-foreground font-nintendo-ds-bios text-3xl md:text-6xl leading-relaxed cursor-custom">
       {/* 3DS Top Screen */}
       <div
@@ -386,14 +390,15 @@ export default function Home() {
               </button>
 
               <Link
-                href="/projects"
-                className="flex h-12 w-12 items-center justify-center rounded-md bg-white p-1"
+                href="/blackjack"
+                aria-label="Play Blackjack"
+                className="flex h-12 w-12 items-center justify-center rounded-md bg-white p-1 hover:opacity-80 transition-opacity"
               >
                 <Image
                   src="/images/masterball-new.png"
                   width={40}
                   height={40}
-                  alt="Projects"
+                  alt="Blackjack"
                   className="pixelated"
                 />
               </Link>
@@ -462,5 +467,6 @@ export default function Home() {
       </div>
       <RetroChatroom isOpen={isChatroomOpen} onClose={() => setIsChatroomOpen(false)} />
     </div>
+    </>
   );
 }

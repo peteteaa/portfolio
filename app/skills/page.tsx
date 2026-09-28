@@ -96,12 +96,12 @@ export default function SkillsPage() {
             {[
               {
                 category: "Languages",
-                skills: ["JavaScript", "TypeScript", "Python", "Java", "C++", "HTML/CSS"],
+                skills: ["JavaScript", "TypeScript", "Python", "Java", "C","Golang"],
                 color: "#4169e1",
               },
               {
                 category: "Frontend",
-                skills: ["React", "Next.js", "Vue.js", "Tailwind CSS", "GSAP", "Three.js"],
+                skills: ["React", "Next.js", "Tailwind CSS",],
                 color: "#9932cc",
               },
               {
@@ -111,7 +111,7 @@ export default function SkillsPage() {
               },
               {
                 category: "Tools",
-                skills: ["Git", "Docker", "AWS", "Figma", "Aseprite", "Unity"],
+                skills: ["Git", "Docker", "AWS", "Figma", "Unity"],
                 color: "#32cd32",
               },
             ].map((category, index) => (
