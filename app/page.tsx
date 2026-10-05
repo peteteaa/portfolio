@@ -124,7 +124,7 @@ export default function Home() {
       >
         <div className="absolute inset-0">
           <Image
-            src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
+            src={theme === "dark" ? "/images/night.gif" : "/images/beach.gif"}
             alt="Sky Background"
             width={100}
             height={100}

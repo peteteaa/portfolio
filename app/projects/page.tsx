@@ -98,6 +98,13 @@ export default function ProjectsPage() {
           <div className="grid gap-4">
             {[
               {
+                title: "Mahjong",
+                description: "3D mahjong game built with Three.js, React, and TypeScript, featuring realistic tile physics and multiplayer support.",
+                image: "/images/poketracker.png",
+                winner: true,
+                winnerDescription: "2x Winner At Creators Corner NVIDIA GTC Hack-Windsurf 2nd Place, Tavus 3rd Place"
+              },
+              {
                 title: "LaunchPad",
                 description: "LaunchPad uses AI to turn GitHub repos into onboarding videos, built with Gemini, Tavus, GitHub API, Node.js, Python, and TSX.",
                 image: "/images/poketracker.png",
