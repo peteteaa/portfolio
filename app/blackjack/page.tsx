@@ -34,7 +34,7 @@ export default function BlackjackPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
       {/* 3DS Top Screen */}
-      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]">
+      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
           <Image
             src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
@@ -48,9 +48,9 @@ export default function BlackjackPage() {
         </div>
 
         {/* Status Bar */}
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white dark:bg-[#0066cc]/80 light:bg-[#87ceeb]/80">
+        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white">
           <div className="flex items-center gap-1">
-            <div className="h-4 w-4 bg-[#33ccff] dark:bg-[#33ccff] light:bg-[#4169e1]"></div>
+            <div className="h-4 w-4 bg-[#33ccff]"></div>
             <span>Game Corner</span>
           </div>
           <div className="flex items-center gap-2">

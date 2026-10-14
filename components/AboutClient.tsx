@@ -37,7 +37,7 @@ export default function AboutClient() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
-      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]">
+      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
           <Image
             src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
@@ -50,9 +50,9 @@ export default function AboutClient() {
           <PokemonAnimation />
         </div>
 
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white dark:bg-[#0066cc]/80 light:bg-[#87ceeb]/80">
+        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white">
           <div className="flex items-center gap-1">
-            <div className="h-4 w-4 bg-[#33ccff] dark:bg-[#33ccff] light:bg-[#4169e1]"></div>
+            <div className="h-4 w-4 bg-[#33ccff]"></div>
             <span>Internet</span>
           </div>
           <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export default function AboutClient() {
                 <ChevronLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <h2 className="text-lg font-bold dark:text-white light:text-white">About Me</h2>
+            <h2 className="text-lg font-bold text-foreground">About Me</h2>
           </div>
 
           <div className="mb-4 flex flex-col items-center">
@@ -101,7 +101,7 @@ export default function AboutClient() {
             <Card className="mb-4 border border-border bg-card p-4">
               <h3 className="mb-2 text-sm font-bold text-foreground">Background</h3>
               <div>
-                <p className="mb-2 text-xs text-foreground">I'm a Computer Science major with a passion for creating engaging digital experiences. I enjoy going to hackathons,where I can make new friends, while also building cool projects!</p>
+                <p className="mb-2 text-xs text-foreground">I'm a Computer Science major with a passion for creating engaging digital experiences. I enjoy going to hackathons, where I can make new friends, while also building cool projects!</p>
                 <p className="text-xs text-foreground">Currently, I'm focused on full-stack web development, UI/UX Design, and AI/ML as well as exploring the intersection of art and technology. When I'm not coding, you can find me in the gym, practicing Muay Thai, collecting Pokemon cards, or Bouldering.</p>
               </div>
             </Card>
@@ -124,7 +124,7 @@ export default function AboutClient() {
                   <Badge className="border-2 border-[#333] bg-[#32cd32] text-xs text-white">Web Development</Badge>
                 </Link>
                 <Link href="/interests/ai-ml" className="inline-block">
-                  <Badge className="border-2 border-[#333] bg-[#ffd700] text-xs text-white">AI & ML</Badge>
+                  <Badge className="border-2 border-[#333] bg-[#ffd700] text-xs text-[#333]">AI & ML</Badge>
                 </Link>
                 <Link href="/interests/running" className="inline-block">
                   <Badge className="border-2 border-[#333] bg-[#4682b4] text-xs text-white">Running</Badge>

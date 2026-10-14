@@ -45,7 +45,7 @@ export default function ProjectsPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
       {/* 3DS Top Screen */}
-      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]">
+      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
           <Image
             src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
@@ -59,9 +59,9 @@ export default function ProjectsPage() {
         </div>
 
         {/* Status Bar */}
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white dark:bg-[#0066cc]/80 light:bg-[#87ceeb]/80">
+        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white">
           <div className="flex items-center gap-1">
-            <div className="h-4 w-4 bg-[#33ccff] dark:bg-[#33ccff] light:bg-[#4169e1]"></div>
+            <div className="h-4 w-4 bg-[#33ccff]"></div>
             <span>Internet</span>
           </div>
           <div className="flex items-center gap-2">
@@ -100,35 +100,34 @@ export default function ProjectsPage() {
               {
                 title: "Mahjong",
                 description: "3D mahjong game built with Three.js, React, and TypeScript, featuring realistic tile physics and multiplayer support.",
-                image: "/images/poketracker.png",
+                image: "/images/metagross.png",
                 winner: true,
-                winnerDescription: "2x Winner At Creators Corner NVIDIA GTC Hack-Windsurf 2nd Place, Tavus 3rd Place"
               },
               {
                 title: "LaunchPad",
                 description: "LaunchPad uses AI to turn GitHub repos into onboarding videos, built with Gemini, Tavus, GitHub API, Node.js, Python, and TSX.",
-                image: "/images/poketracker.png",
+                image: "/images/beldum.png",
                 winner: true,
                 winnerDescription: "2x Winner At Creators Corner NVIDIA GTC Hack-Windsurf 2nd Place, Tavus 3rd Place"
               },
               {
                 title: "LoveBubbles",
-                description: "Lovebubbles is a Valentine's-themed collage generator that uses a Python backend, JS frontend, and Black Forest Labs' Flux 1.1 Ultra model, built with Windsurf IDE and Codeiume",
-                image: "/images/pixel-generator.png",
+                description: "Lovebubbles is a Valentine's-themed collage generator that uses a Python backend, JS frontend, and Black Forest Labs' Flux 1.1 Ultra model, built with Windsurf IDE and Codeium",
+                image: "/images/spheal.png",
                 winner: true,
                 winnerDescription: "Winner at AGI House Romantic Hacker-Windsurf 3rd Place"
               },
               {
                 title: "LeetRizz",
-                description: "Leetrizz is Leetcode-style game created using tsx with a python backend which rates a users 'rizz'  or charisma",
-                image: "/images/retro-game.png",
+                description: "LeetRizz is a LeetCode-style game built with TSX and a Python backend that rates a user's 'rizz', or charisma",
+                image: "/images/greninja.png",
                 winner: true,
                 winnerDescription: "USFCA Bloom-People's Choice"
               },
               {
-                title: " Course Planner",
-                description: "A tool to help  students plan their course schedule efficiently",
-                image: "/images/course-planner.png",
+                title: "Course Planner",
+                description: "A tool to help students plan their course schedule efficiently",
+                image: "/images/lucario.png",
                 winner: false
               },
             ].map((project, index) => (
@@ -143,12 +142,12 @@ export default function ProjectsPage() {
                       width={64}
                       height={64}
                       alt={project.title}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-contain p-1 pixelated"
                     />
                   </div>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold text-white">{project.title}</h3>
+                      <h3 className="text-sm font-bold text-foreground">{project.title}</h3>
                       {project.winner && (
                         <div className="tooltip-container">
                           <Badge className="bg-green-500 text-white text-xs px-2 py-0.5 border border-[#333] cursor-help">
@@ -171,7 +170,8 @@ export default function ProjectsPage() {
                               top: 100%;
                               margin-top: 5px;
                               width: auto;
-                              min-width: 700px;
+                              width: max-content;
+                              max-width: min(700px, 80vw);
                
                               white-space: normal;
                               background-color: rgba(0, 0, 0, 0.9);

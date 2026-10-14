@@ -111,8 +111,16 @@
 }
 
 /* Custom Cursor */
-html, body, * {
-  cursor: url('/images/cursor.png'), auto !important;
+html, body {
+  cursor: url('/images/cursor.png'), auto;
+}
+
+a, button, [role="button"], label[for], summary {
+  cursor: pointer;
+}
+
+input, textarea, [contenteditable="true"] {
+  cursor: text;
 }
 
 /* 3DS Folder Selection Animation */

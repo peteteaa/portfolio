@@ -49,7 +49,7 @@ export default function ContactPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
       {/* 3DS Top Screen */}
-      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]">
+      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
           <Image
             src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
@@ -63,9 +63,9 @@ export default function ContactPage() {
         </div>
 
         {/* Status Bar */}
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white dark:bg-[#0066cc]/80 light:bg-[#87ceeb]/80">
+        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white">
           <div className="flex items-center gap-1">
-            <div className="h-4 w-4 bg-[#33ccff] dark:bg-[#33ccff] light:bg-[#4169e1]"></div>
+            <div className="h-4 w-4 bg-[#33ccff]"></div>
             <span>Internet</span>
           </div>
           <div className="flex items-center gap-2">
@@ -96,7 +96,7 @@ export default function ContactPage() {
                 <ChevronLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <h2 className="text-lg font-bold dark:text-white light:text-[#333]">Contact Me</h2>
+            <h2 className="text-lg font-bold text-foreground">Contact Me</h2>
           </div>
 
           <Card className="mb-4 border border-border bg-card p-4">
@@ -133,12 +133,12 @@ export default function ContactPage() {
                   } else {
                     const errorText = await response.text();
                     console.error("Response error:", response.status, errorText);
-                    setResponseMessage(`Error: ${response.status} - ${errorText}`);
+                    setResponseMessage("");
                     setSubmitStatus("error");
                   }
                 } catch (error: any) {
                   console.error("Error submitting form:", error);
-                  setResponseMessage(`Error: ${error.message || "Failed to send message"}`);
+                  setResponseMessage("");
                   setSubmitStatus("error");
                 } finally {
                   setIsSubmitting(false);
@@ -203,7 +203,10 @@ export default function ContactPage() {
           <Card className="border border-border bg-card p-4">
             <h3 className="mb-3 text-sm font-bold text-foreground">Connect With Me</h3>
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
+              <a
+                href="mailto:pthambundit@icloud.com"
+                className="flex items-center gap-3 transition-opacity hover:opacity-80"
+              >
                 <div className="flex h-8 w-8 items-center justify-center rounded-md bg-transparent">
                   <Image src="/images/mail-icon.png" width={24} height={24} alt="Email" className="pixelated" />
                 </div>
@@ -211,7 +214,7 @@ export default function ContactPage() {
                   <p className="text-xs text-muted-foreground">Email</p>
                   <p className="text-xs font-medium text-foreground">pthambundit@icloud.com</p>
                 </div>
-              </div>
+              </a>
               <a 
                 href="https://github.com/peteteaa" 
                 target="_blank" 
@@ -236,11 +239,16 @@ export default function ContactPage() {
                   <Image src="/images/linkedin-icon.png" width={24} height={24} alt="LinkedIn" className="pixelated" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-300 dark:text-gray-300 light:text-gray-100">LinkedIn</p>
-                  <p className="text-xs font-medium dark:text-white light:text-white">LinkedIn</p>
+                  <p className="text-xs text-muted-foreground">LinkedIn</p>
+                  <p className="text-xs font-medium text-foreground">linkedin.com/in/pete-thambundit</p>
                 </div>
               </a>
-              <div className="flex items-center gap-3">
+              <a
+                href="https://www.instagram.com/pete_teaa/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 transition-opacity hover:opacity-80"
+              >
                 <div className="flex h-8 w-8 items-center justify-center rounded-md bg-transparent">
                   <Image
                     src="/images/instagram-icon.png"
@@ -252,9 +260,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Instagram</p>
-                  <p className="text-xs font-medium text-foreground">instagram.com/peteteaa</p>
+                  <p className="text-xs font-medium text-foreground">instagram.com/pete_teaa</p>
                 </div>
-              </div>
+              </a>
             </div>
           </Card>
         </div>

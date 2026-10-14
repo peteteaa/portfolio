@@ -120,7 +120,7 @@ export default function Home() {
       {/* 3DS Top Screen */}
       <div
         ref={skyContainerRef}
-        className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333] dark:border-[#333333] light:border-[#87ceeb]"
+        className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333]"
       >
         <div className="absolute inset-0">
           <Image
@@ -236,7 +236,7 @@ export default function Home() {
           {/* Folder Grid with Navigation Buttons */}
           <div className="grid grid-cols-5 gap-10">
             <Link href="/" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/lucario.png"
                   width={48}
@@ -251,7 +251,7 @@ export default function Home() {
             </Link>
 
             <Link href="/projects" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/umbreon.png"
                   width={32}
@@ -266,7 +266,7 @@ export default function Home() {
             </Link>
 
             <Link href="/skills" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/greninja.png"
                   width={48}
@@ -281,7 +281,7 @@ export default function Home() {
             </Link>
 
             <Link href="/contact" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/beldum.png"
                   width={48}
@@ -296,7 +296,7 @@ export default function Home() {
             </Link>
 
             <Link href="/about" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/machamp.png"
                   width={32}
@@ -311,7 +311,7 @@ export default function Home() {
             </Link>
 
             <Link href="" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/spheal.png"
                   width={32}
@@ -324,7 +324,7 @@ export default function Home() {
             </Link>
 
             <Link href="/about" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/whooper.png"
                   width={32}
@@ -337,7 +337,7 @@ export default function Home() {
             </Link>
 
             <Link href="/about" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/10 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/aurorus.png"
                   width={32}
@@ -349,7 +349,7 @@ export default function Home() {
               <span className="mt-1 text-xl text-foreground"></span>
             </Link>
             <Link href="/" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/20 folder-select">
+              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
                 <Image
                   src="/images/metagross.png"
                   width={48}
@@ -361,7 +361,7 @@ export default function Home() {
             </Link>
             {Array.from({ length: 0 }).map((_, i) => (
               <div key={i} className="flex flex-col items-center">
-                <div className="h-16 w-16 rounded-md bg-[#333]/20 dark:bg-[#333]/20 light:bg-[#333]/10 folder-select"></div>
+                <div className="h-16 w-16 rounded-md bg-[#333]/20 folder-select"></div>
                 <span className="mt-1 text-xl text-foreground">Empty</span>
               </div>
             ))}
@@ -369,9 +369,9 @@ export default function Home() {
         </div>
 
         {/* Bottom Navigation Bar */}
-        <div className="relative border-t-2 border-[#333] dark:border-[#333] light:border-[#4169e1]">
+        <div className="relative border-t-2 border-[#333]">
           {/* Main Navigation with Pokeball */}
-          <div className="flex items-center justify-between bg-grey-400 p-2 bg-grey-200 light:bg-grey-">
+          <div className="flex items-center justify-between bg-muted p-2">
             <div className="flex items-center gap-2">
               <div className="h-12 w-12 rounded-md bg-white/20"></div>
               
