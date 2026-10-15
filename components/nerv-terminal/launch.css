@@ -1,0 +1,86 @@
+/* Launch sequence into /terminal (components/nerv-terminal/TerminalLaunch.tsx). Scoped under .nerv-launch. */
+
+/* the homepage switching off like a CRT (transform-origin is set inline to the middle of the viewport) */
+.nerv-crtoff { animation: nl-crtoff .36s cubic-bezier(.5,0,.8,.4) forwards; }
+@keyframes nl-crtoff {
+  0% { transform: scale(1, 1); filter: brightness(1); }
+  55% { transform: scale(1, .004); filter: brightness(3); }
+  100% { transform: scale(0, .004); filter: brightness(5); }
+}
+
+.nerv-launch {
+  --amber: #ff8a1f; --cyan: #2bb5d6; --green: #39ff8a; --red: #ff2a2a; --white: #f4f1ea;
+  --cond: var(--eb-cond), "Arial Narrow", sans-serif; --mono: var(--eb-mono), monospace; --serif: var(--eb-serif), serif;
+  position: fixed; inset: 0; z-index: 9998; background: transparent; color: var(--amber); font-family: var(--mono);
+  font-size: 16px; line-height: normal; overflow: hidden; cursor: pointer; pointer-events: auto;
+}
+.nerv-launch *, .nerv-launch *::before, .nerv-launch *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* transparent while the homepage switches off, then black */
+.nerv-launch.on { background: #000; }
+.nerv-launch.on::before { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.45) 0 1px, transparent 1px 2px); }
+.nerv-launch.on::after { content: ""; position: absolute; inset: 0; z-index: 51; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.75) 100%); }
+.nerv-launch .grain { position: absolute; inset: 0; z-index: 49; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 .86  0 0 0 0 .72  0 0 0 1.25 -.42'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: nl-grain .45s steps(6) infinite; }
+.nerv-launch.on .grain { opacity: .28; }
+@keyframes nl-grain { 17% { background-position: -97px 61px; } 33% { background-position: 73px -109px; } 50% { background-position: -49px 121px; } 67% { background-position: 109px 37px; } 83% { background-position: -121px -49px; } }
+@keyframes nl-blink { 50% { opacity: 0; } }
+.nerv-launch.flicker { animation: nl-flicker .1s steps(2) 5; }
+@keyframes nl-flicker { 50% { opacity: .25; } }
+.nerv-launch .ph { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
+.nerv-launch .ph.on { opacity: 1; visibility: visible; }
+.nerv-launch.black .ph { display: none; }
+.nerv-launch .skip { position: absolute; right: 4vw; bottom: 4vh; z-index: 60; font-size: 11px; letter-spacing: .3em; opacity: 0; }
+.nerv-launch.on .skip { opacity: .5; }
+
+.nerv-launch .lbox {
+  display: inline-flex; align-items: center; gap: .4em; font-family: var(--cond); font-weight: 700; text-transform: uppercase;
+  color: var(--amber); background: #000; border: 2px solid var(--amber); border-radius: 9px; padding: .06em .5em; line-height: 1.1;
+  white-space: nowrap; text-shadow: 0 0 5px rgba(255,138,31,.55); box-shadow: 0 0 6px rgba(255,138,31,.3);
+}
+.nerv-launch .lbox.green { color: var(--green); border-color: var(--green); text-shadow: 0 0 8px rgba(57,255,138,.7); box-shadow: 0 0 10px rgba(57,255,138,.4); }
+
+/* 1: access request + quick MAGI vote */
+.nerv-launch #nl-access { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3vh; text-align: center; padding: 0 16px; }
+.nerv-launch #nl-access .req { font-size: clamp(22px, 4.4vw, 56px); }
+.nerv-launch #nl-access .jp { font-family: var(--serif); color: var(--white); font-size: clamp(18px, 2.6vw, 32px); }
+.nerv-launch #nl-access .who { font-size: clamp(12px, 1.6vw, 18px); letter-spacing: .12em; color: var(--white); }
+.nerv-launch #nl-access .who b { font-weight: 400; color: var(--green); }
+.nerv-launch .votes { display: flex; gap: 1.4vw; flex-wrap: wrap; justify-content: center; }
+.nerv-launch .vote { font-size: clamp(14px, 2vw, 26px); flex-direction: column; gap: 0; padding: .3em .8em; background: var(--cyan); color: #000; border-color: var(--amber); text-shadow: none; }
+.nerv-launch .vote.think { animation: nl-think .16s steps(1) infinite; }
+@keyframes nl-think { 50% { background: #145e70; } }
+.nerv-launch .vote span { font-family: var(--serif); font-size: 1.15em; opacity: 0; }
+.nerv-launch .vote.yes { background: var(--green); animation: none; }
+.nerv-launch .vote.yes span { opacity: 1; }
+.nerv-launch .granted { font-size: clamp(26px, 5vw, 64px); opacity: 0; }
+.nerv-launch .granted.show { opacity: 1; animation: nl-blink .16s steps(1) 3; }
+
+/* 2: descent into central dogma */
+.nerv-launch .stripes { position: absolute; left: 0; right: 0; height: 5vh; min-height: 18px; background: repeating-linear-gradient(45deg, var(--amber) 0 22px, #000 22px 44px); }
+.nerv-launch .stripes.top { top: 0; }
+.nerv-launch .stripes.bot { bottom: 0; }
+.nerv-launch #nl-down.on .stripes { animation: nl-slide .35s linear infinite; }
+@keyframes nl-slide { to { background-position: 62px 0; } }
+.nerv-launch .rail { position: absolute; top: 5vh; bottom: 5vh; width: 18px; border: 0 solid var(--amber); background: repeating-linear-gradient(to bottom, var(--amber) 0 2px, transparent 2px 22px); }
+.nerv-launch .rail.l { left: 3vw; border-right-width: 2px; }
+.nerv-launch .rail.r { right: 3vw; border-left-width: 2px; }
+.nerv-launch #nl-down.on .rail { animation: nl-rail .18s linear infinite; }
+@keyframes nl-rail { to { background-position: 0 -22px; } }
+.nerv-launch .speed { position: absolute; inset: 0; overflow: hidden; }
+.nerv-launch .speed i { position: absolute; bottom: 0; width: 2px; background: linear-gradient(to top, transparent, rgba(255,138,31,.85), transparent); transform: translateY(120%); }
+.nerv-launch #nl-down.on .speed i { animation: nl-up var(--t) linear var(--d) infinite; }
+@keyframes nl-up { to { transform: translateY(-130vh); } }
+.nerv-launch .down { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.4vh; text-align: center; z-index: 2; padding: 0 16px; }
+.nerv-launch .down .lbox { font-size: clamp(18px, 3.2vw, 40px); }
+.nerv-launch .down .jp { font-family: var(--serif); color: var(--white); font-size: clamp(18px, 2.8vw, 34px); }
+.nerv-launch .depth { font-size: clamp(56px, 13vw, 170px); line-height: 1; color: var(--white); text-shadow: 0 0 18px rgba(255,138,31,.7); font-variant-numeric: tabular-nums; }
+.nerv-launch .depth small { font-size: .32em; color: var(--amber); margin-left: .2em; }
+.nerv-launch .floors { display: flex; gap: 10px; font-family: var(--cond); font-weight: 700; font-size: clamp(12px, 1.5vw, 18px); }
+.nerv-launch .floors span { opacity: .35; }
+.nerv-launch .floors span.cur { opacity: 1; color: var(--green); }
+.nerv-launch .arrived { position: absolute; inset: 0; z-index: 3; display: none; place-items: center; background: #000; }
+.nerv-launch .arrived.on { display: grid; }
+.nerv-launch .arrived .lbox { font-size: clamp(26px, 5vw, 64px); }
+
+@media (prefers-reduced-motion: reduce) { .nerv-launch .grain { animation: none; } }

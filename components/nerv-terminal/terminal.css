@@ -1,0 +1,112 @@
+/* NERV terminal (components/nerv-terminal). Everything is scoped under .nerv-term. */
+.nerv-term {
+  --amber: #ff8a1f; --amber-hi: #ffb15c; --amber-dim: #7a3c06; --green: #39ff8a; --red: #ff2a2a; --white: #ffe9cf; --mono: var(--eb-mono), ui-monospace, monospace; --serif: var(--eb-serif), serif; --cond: var(--eb-cond), "Arial Narrow", sans-serif; --glow: 0 0 4px rgba(255,138,31,.75), 0 0 14px rgba(255,138,31,.25);
+  position: fixed; inset: 0; z-index: 50; overflow: hidden; font-family: var(--mono); font-size: 16px; line-height: normal;
+  background: radial-gradient(ellipse at 50% 30%, #2a2622, #0e0c0a 70%);
+}
+.nerv-term *, .nerv-term *::before, .nerv-term *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.nerv-term a { color: inherit; }
+.nerv-term .monitor { position: absolute; inset: 14px; border-radius: 26px; padding: 16px; background: linear-gradient(160deg, #3a352f, #1d1a17 55%, #141210); box-shadow: inset 0 2px 0 rgba(255,255,255,.08), inset 0 -3px 8px rgba(0,0,0,.6), 0 18px 40px rgba(0,0,0,.6); }
+.nerv-term .monitor .badge { position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); font-family: var(--cond); font-size: 11px; letter-spacing: .3em; color: #8a7c6a; }
+.nerv-term .monitor .led { position: absolute; bottom: 5px; right: 28px; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.nerv-term .screen { position: relative; height: 100%; border-radius: 18px / 22px; overflow: hidden; display: flex; flex-direction: column; background: radial-gradient(ellipse at 50% 45%, #140a02 0, #070301 60%, #000 100%); box-shadow: inset 0 0 70px rgba(0,0,0,.95), inset 0 0 12px rgba(0,0,0,.9); color: var(--amber); text-shadow: var(--glow); }
+.nerv-term .flick { position: absolute; inset: 0; pointer-events: none; z-index: 63; background: #000; opacity: 0; animation: nt-flick 4s steps(1) infinite; }
+@keyframes nt-flick { 47% { opacity: .05; } 48% { opacity: 0; } 81% { opacity: .03; } 82% { opacity: 0; } }
+.nerv-term .crt { position: absolute; inset: 0; pointer-events: none; z-index: 60; background: repeating-linear-gradient(0deg, rgba(0,0,0,.45) 0 1px, transparent 1px 2px); }
+.nerv-term .crt::after { content: ""; position: absolute; left: 0; right: 0; top: -30%; height: 30%; background: linear-gradient(to bottom, transparent, rgba(255,170,90,.06) 50%, transparent); animation: nt-roll 6s linear infinite; }
+@keyframes nt-roll { to { transform: translateY(460%); } }
+.nerv-term .glare { position: absolute; inset: 0; pointer-events: none; z-index: 61; background: radial-gradient(ellipse at 30% 12%, rgba(255,255,255,.05), transparent 45%), radial-gradient(ellipse at center, transparent 62%, rgba(0,0,0,.65) 100%); }
+.nerv-term .grain { position: absolute; inset: 0; pointer-events: none; z-index: 62; opacity: .28; mix-blend-mode: screen; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 .86 0 0 0 0 .72 0 0 0 1.25 -.42'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); animation: nt-grain .45s steps(6) infinite; }
+.nerv-term .grain.dark { opacity: .22; mix-blend-mode: multiply; animation-duration: .38s; animation-direction: reverse; filter: invert(1) contrast(1.3); }
+@keyframes nt-grain { 17% { background-position: -97px 61px; } 33% { background-position: 73px -109px; } 50% { background-position: -49px 121px; } 67% { background-position: 109px 37px; } 83% { background-position: -121px -49px; } }
+@keyframes nt-blink { 50% { opacity: 0; } }
+.nerv-term .screen.poweron { animation: nt-crton .6s cubic-bezier(.2,.8,.3,1) both; }
+@keyframes nt-crton { 0% { transform: scale(0, .004); filter: brightness(6); } 35% { transform: scale(1, .004); filter: brightness(4); } 100% { transform: scale(1, 1); filter: brightness(1); } }
+.nerv-term .titlebar { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 7px 16px; border-bottom: 1px solid rgba(255,138,31,.45); font-size: 13px; letter-spacing: .12em; white-space: nowrap; overflow: hidden; }
+.nerv-term .titlebar .dots { letter-spacing: .3em; }
+.nerv-term .titlebar .dots i { font-style: normal; }
+.nerv-term .titlebar .dots i:last-child { color: var(--green); }
+.nerv-term .scroll { flex: 1; overflow-y: auto; padding: 14px 20px 10px; font-size: clamp(12px, 1.2vw, 15px); line-height: 1.45; scrollbar-width: thin; scrollbar-color: var(--amber-dim) transparent; }
+.nerv-term .line { white-space: pre-wrap; word-break: break-word; min-height: 1.45em; }
+.nerv-term .line.box { white-space: pre; word-break: normal; }
+.nerv-term .hi { color: var(--white); }
+.nerv-term .ok { color: var(--green); text-shadow: 0 0 4px rgba(57,255,138,.7); }
+.nerv-term .err { color: var(--red); text-shadow: 0 0 4px rgba(255,42,42,.7); }
+.nerv-term .dim { opacity: .55; }
+.nerv-term .jp { font-family: var(--serif); font-size: .95em; color: var(--white); }
+.nerv-term .ps1 .u { color: var(--green); text-shadow: 0 0 4px rgba(57,255,138,.7); }
+.nerv-term .ps1 .p { color: var(--amber-hi); }
+.nerv-term .click { cursor: pointer; text-decoration: none; }
+.nerv-term .click:hover, .nerv-term .click:focus-visible { background: var(--amber); color: #000; text-shadow: none; outline: none; }
+.nerv-term .click:hover .jp, .nerv-term .click:hover .ok, .nerv-term .click:hover .hi, .nerv-term .click:hover .dim { color: #000; text-shadow: none; opacity: 1; }
+/* Tailwind's preflight makes img display:block; these sit inline in the text */
+.nerv-term img.amb { display: inline-block; width: 1.35em; height: 1.35em; vertical-align: -.35em; image-rendering: pixelated; filter: grayscale(1) sepia(1) saturate(5) hue-rotate(-16deg) brightness(1.15) contrast(1.15) drop-shadow(0 0 3px rgba(255,138,31,.7)); }
+.nerv-term .click:hover img.amb { filter: grayscale(1) brightness(0); }
+.nerv-term .neo { display: flex; gap: 3ch; flex-wrap: wrap; margin: 2px 0 4px; }
+.nerv-term .neo pre { font: inherit; line-height: 1.3; }
+.nerv-term .neo .ball .r { color: var(--red); text-shadow: 0 0 5px rgba(255,42,42,.7); }
+.nerv-term .neo .ball .w { color: var(--white); }
+.nerv-term .swatch i { display: inline-block; width: 2ch; height: 1em; vertical-align: -.15em; margin-right: 2px; box-shadow: 0 0 5px currentColor; }
+.nerv-term .pline .typed { color: var(--white); white-space: pre-wrap; }
+.nerv-term .pline .blk { animation: nt-blink .9s steps(1) infinite; }
+.nerv-term .pline.busy .blk { animation: none; opacity: .35; }
+.nerv-term #nt-cmd { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; font-size: 16px; border: 0; padding: 0; }
+.nerv-term .status { flex: none; display: flex; align-items: stretch; gap: 0; border-top: 1px solid rgba(255,138,31,.45); font-size: 13px; white-space: nowrap; height: 30px; }
+.nerv-term .status .wins { display: flex; }
+.nerv-term .status .wins button { font: inherit; color: inherit; text-shadow: inherit; background: none; border: 0; padding: 0 9px; cursor: pointer; }
+.nerv-term .status .wins button.cur { background: var(--amber); color: #000; text-shadow: none; }
+.nerv-term .status .wins button:hover { color: var(--green); }
+.nerv-term .status .wins button.cur:hover { color: #000; }
+.nerv-term .status .track { position: relative; flex: 1; overflow: hidden; border-left: 1px solid rgba(255,138,31,.3); border-right: 1px solid rgba(255,138,31,.3); }
+.nerv-term .status .track img { position: absolute; bottom: 0; height: 28px; width: auto; vertical-align: 0; }
+.nerv-term .status .right { display: flex; align-items: center; gap: 10px; padding: 0 12px; }
+.nerv-term .tcard { position: absolute; inset: 0; z-index: 50; background: #000; color: #f4f1ea; text-shadow: none; font-family: var(--serif); display: none; flex-direction: column; justify-content: center; padding: 0 8%; line-height: .95; }
+.nerv-term .tcard.on { display: flex; }
+.nerv-term .tcard > * { opacity: 0; }
+.nerv-term .tcard > .show { opacity: 1; }
+.nerv-term .tcard .ep { font-size: clamp(14px, 2.6vw, 30px); margin-bottom: 3vh; }
+.nerv-term .tcard .big { font-size: clamp(48px, 12vw, 180px); transform: scaleX(.8); transform-origin: left; white-space: nowrap; }
+.nerv-term .tcard .jp { font-size: clamp(22px, 4.6vw, 64px); margin-top: 2vh; color: #f4f1ea; }
+.nerv-term .blue { position: absolute; inset: 0; z-index: 51; background: #000; color: var(--red); text-shadow: 0 0 8px rgba(255,42,42,.7); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 3vh; padding: 16px; text-align: center; }
+.nerv-term .blue.on { display: flex; animation: nt-redflash .22s steps(1) 5; }
+@keyframes nt-redflash { 50% { background: #3a0000; } }
+.nerv-term .blue .head { font-family: var(--cond); font-size: clamp(22px, 4.4vw, 52px); border: 2px solid var(--red); border-radius: 10px; padding: .05em .5em; }
+.nerv-term .blue .sub { font-family: var(--serif); font-size: clamp(18px, 3.4vw, 38px); color: #f4f1ea; text-shadow: none; }
+.nerv-term .blue .sub span { color: var(--red); }
+.nerv-term .honey { --w: min(13vw, 110px); --g: 6px; display: flex; flex-direction: column; align-items: center; }
+.nerv-term .honey .rw { display: flex; gap: var(--g); }
+.nerv-term .honey .rw + .rw { margin-top: calc(var(--w) * -0.2887 + var(--g)); }
+.nerv-term .hx { width: var(--w); height: calc(var(--w) * 1.1547); background: var(--red); clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); display: grid; place-items: center; animation: nt-hexblink .32s steps(1) var(--d) infinite; }
+.nerv-term .hx i { width: calc(100% - 8px); height: calc(100% - 9px); background: #000; display: grid; place-items: center; clip-path: inherit; font-style: normal; font-family: var(--cond); font-size: calc(var(--w) * .17); color: var(--red); text-shadow: none; }
+.nerv-term .hx.solid i { background: var(--red); color: #000; font-family: var(--serif); font-size: calc(var(--w) * .28); }
+@keyframes nt-hexblink { 0%, 64% { opacity: 1; } 65%, 100% { opacity: .2; } }
+.nerv-term .measure { position: absolute; visibility: hidden; white-space: pre; }
+.nerv-term .panes { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.nerv-term .panes .scroll { min-width: 0; min-height: 0; }
+.nerv-term .pinned { margin-bottom: 1.45em; }
+.nerv-term .panes.booting .pinned { display: none; }
+.nerv-term .panes.booting .pline { visibility: hidden; }
+.nerv-term .pinrow > div { min-width: 0; }
+.nerv-term .panes.stack .pinned, .nerv-term .panes.split .pinned { flex: none; margin: 0; overflow-y: auto; padding: 14px 20px 10px; font-size: clamp(12px, 1.2vw, 15px); line-height: 1.45; scrollbar-width: thin; scrollbar-color: var(--amber-dim) transparent; }
+.nerv-term .panes.stack .pinned { max-height: 56%; border-bottom: 1px solid rgba(255,138,31,.45); }
+.nerv-term .panes.stack .pinrow { display: flex; flex-wrap: wrap; gap: 0 48px; align-items: flex-start; }
+.nerv-term .panes.split { flex-direction: row; }
+.nerv-term .panes.split .pinned { width: min(66ch, 52%); border-right: 1px solid rgba(255,138,31,.45); }
+.nerv-term .status .right button { font: inherit; color: inherit; text-shadow: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+.nerv-term .status .right button:hover { color: var(--green); }
+.nerv-term .status .right button.cur { color: #000; background: var(--amber); text-shadow: none; padding: 0 6px; }
+@media (max-width: 900px) {
+  .nerv-term .status .right .splitbtn { display: none; }
+}
+@media (max-width: 640px) {
+  .nerv-term .monitor { inset: 6px; padding: 8px; border-radius: 16px; }
+  .nerv-term .monitor .badge { display: none; }
+  .nerv-term .scroll, .nerv-term .pinned { padding: 10px 10px 8px; }
+  .nerv-term .titlebar .host { display: none; }
+  .nerv-term .status .wins button { padding: 0 6px; }
+  .nerv-term .status .wins button span { display: none; }
+  .nerv-term .status .right .magi { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nerv-term .flick, .nerv-term .grain, .nerv-term .hx, .nerv-term .crt::after { animation: none; }
+}

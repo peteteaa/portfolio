@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import TextType from "@/components/TextType";
 import RetroChatroom from "@/components/RetroChatroom";
-import EvangelionBoot from "@/components/evaIntro";
+import EvangelionBoot, { replayEvaIntro } from "@/components/evaIntro";
+import TerminalLaunch, { CRT_TARGET_ATTR, launchTerminal } from "@/components/nerv-terminal/TerminalLaunch";
+import { OPEN_CHAT_KEY } from "@/components/nerv-terminal/keys";
 
   const pokemonRunGifs = [
     "/images/jolteon-run.gif",
@@ -17,8 +19,6 @@ import EvangelionBoot from "@/components/evaIntro";
     "/images/spoink-run.gif",
   ];
 export default function Home() {
-  const [currentTime, setCurrentTime] = useState("");
-  const [currentDate, setCurrentDate] = useState("");
   const [jolteonPosition, setJolteonPosition] = useState(-100); // Start off-screen
   const [pokemonGif, setPokemonGif] = useState("/images/jolteon-run.gif");
   const [secondPokemonGif, setSecondPokemonGif] = useState<string | null>(null);
@@ -26,35 +26,22 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [isChatroomOpen, setIsChatroomOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const skyContainerRef = useRef<HTMLDivElement>(null);
   const heroTitle = "Pete Thambundit's Portfolio V0.2.6";
   const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
 
   // List of Pokemon run GIFs
 
 
-  const updateDateTime = () => {
-    const now = new Date();
-    setCurrentDate(now.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
-    // Format time as HH:MM
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    setCurrentTime(`${hours}:${minutes}`);
-  };
-
   // Set isClient to true when component mounts (client-side only)
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    // Set initial time and date
-    updateDateTime();
-
-    // Update time every minute
-    const interval = setInterval(updateDateTime, 60000);
-
-    return () => clearInterval(interval);
+    // the terminal's `chat` command sends visitors here with this flag set
+    try {
+      if (sessionStorage.getItem(OPEN_CHAT_KEY) === "1") {
+        sessionStorage.removeItem(OPEN_CHAT_KEY);
+        setIsChatroomOpen(true);
+      }
+    } catch {}
   }, []);
 
   // Pokemon animation effect
@@ -114,12 +101,12 @@ export default function Home() {
 
   return (
     <>
-    {/* <Evangelion Boot /> */}
+    <EvangelionBoot />
+    <TerminalLaunch />
     
-    <div className="flex min-h-screen flex-col bg-background text-foreground font-nintendo-ds-bios text-3xl md:text-6xl leading-relaxed cursor-custom">
+    <div {...{ [CRT_TARGET_ATTR]: "" }} className="flex min-h-screen flex-col bg-background text-foreground font-nintendo-ds-bios text-3xl md:text-6xl leading-relaxed">
       {/* 3DS Top Screen */}
       <div
-        ref={skyContainerRef}
         className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333]"
       >
         <div className="absolute inset-0">
@@ -359,12 +346,6 @@ export default function Home() {
                 />
               </div>
             </Link>
-            {Array.from({ length: 0 }).map((_, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <div className="h-16 w-16 rounded-md bg-[#333]/20 folder-select"></div>
-                <span className="mt-1 text-xl text-foreground">Empty</span>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -373,7 +354,14 @@ export default function Home() {
           {/* Main Navigation with Pokeball */}
           <div className="flex items-center justify-between bg-muted p-2">
             <div className="flex items-center gap-2">
-              <div className="h-12 w-12 rounded-md bg-white/20"></div>
+              <button
+                onClick={replayEvaIntro}
+                className="flex h-12 w-12 items-center justify-center rounded-md bg-black p-1 hover:opacity-80 transition-opacity cursor-pointer"
+                aria-label="Replay intro"
+                title="Replay intro"
+              >
+                <span className="text-sm leading-none text-[#ff8a1f] font-nintendo-ds-bios">EVA</span>
+              </button>
               
               <button
                 onClick={() => setIsChatroomOpen(true)}
@@ -402,6 +390,15 @@ export default function Home() {
                   className="pixelated"
                 />
               </Link>
+
+              <button
+                onClick={launchTerminal}
+                className="flex h-12 w-12 items-center justify-center rounded-md bg-black p-1 hover:opacity-80 transition-opacity cursor-pointer border-2 border-[#ff8a1f]"
+                aria-label="Open the terminal"
+                title="Open the terminal"
+              >
+                <span className="text-sm leading-none text-[#ff8a1f] font-mono">&gt;_</span>
+              </button>
             </div>
 
             <div className="flex items-center gap-4">

@@ -28,3 +28,6 @@ next-env.d.ts
 
 #ds store
 .DS_Store
+
+# eva boot sequence design previews (local only)
+/previews/
