@@ -110,3 +110,4 @@
 @media (prefers-reduced-motion: reduce) {
   .nerv-term .flick, .nerv-term .grain, .nerv-term .hx, .nerv-term .crt::after { animation: none; }
 }
+

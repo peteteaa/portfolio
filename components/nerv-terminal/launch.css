@@ -26,7 +26,8 @@
 @keyframes nl-grain { 17% { background-position: -97px 61px; } 33% { background-position: 73px -109px; } 50% { background-position: -49px 121px; } 67% { background-position: 109px 37px; } 83% { background-position: -121px -49px; } }
 @keyframes nl-blink { 50% { opacity: 0; } }
 .nerv-launch.flicker { animation: nl-flicker .1s steps(2) 5; }
-@keyframes nl-flicker { 50% { opacity: .25; } }
+/* dims instead of fading, so nothing behind the overlay shows through */
+@keyframes nl-flicker { 50% { filter: brightness(.25); } }
 .nerv-launch .ph { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
 .nerv-launch .ph.on { opacity: 1; visibility: visible; }
 .nerv-launch.black .ph { display: none; }

@@ -62,6 +62,11 @@
   }
 }
 
+/* set by a script in app/layout.tsx while the boot intro is about to play: no flash of the site before it */
+html.eva-boot-pending body {
+  background: #000;
+}
+
 /* Retro Font */
 .font-retro {
   font-family: "Press Start 2P", sans-serif;

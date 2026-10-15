@@ -11,7 +11,8 @@
 .eva-boot::before { content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px); }
 .eva-boot::after { content: ""; position: absolute; inset: 0; z-index: 51; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.75) 100%); }
 .eva-boot.flicker { animation: eb-flicker .12s steps(2) 6; }
-@keyframes eb-flicker { 50% { opacity: .2; } }
+/* dims instead of fading: the overlay must stay opaque or the homepage shows through */
+@keyframes eb-flicker { 50% { filter: brightness(.2); } }
 @keyframes eb-blink { 50% { opacity: 0; } }
 @keyframes eb-appear { to { opacity: 1; } }
 .eva-boot .phase { position: absolute; inset: 0; opacity: 0; visibility: hidden; }

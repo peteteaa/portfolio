@@ -441,6 +441,7 @@ export function startTerminal(root, actions) {
     setPrompt();
     setBusy(true);
     panes.classList.add("booting");
+    // the kernel text floods the whole screen and scrolls past like a real boot, then gets cleared
     sink = bootlog;
     const KERNEL = [
       "NERV-OS 2.6 (magi-kernel 15.2.8) #1 SMP PREEMPT",

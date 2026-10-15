@@ -26,6 +26,7 @@ export default function EvangelionBoot() {
       seen = sessionStorage.getItem(SEEN_KEY) === "1";
     } catch {}
     if (!seen) setPlaying(true);
+    else document.documentElement.classList.remove("eva-boot-pending");
 
     const onReplay = () => setPlaying(true);
     window.addEventListener(REPLAY_EVENT, onReplay);
@@ -38,6 +39,7 @@ export default function EvangelionBoot() {
       try {
         sessionStorage.setItem(SEEN_KEY, "1");
       } catch {}
+      document.documentElement.classList.remove("eva-boot-pending");
       setPlaying(false);
     });
   }, [playing]);
