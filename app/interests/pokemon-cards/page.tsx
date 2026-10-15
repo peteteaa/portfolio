@@ -2,6 +2,10 @@
 
 import { useState, useCallback, useRef, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
+import { useTheme } from "next-themes"
+import PokemonAnimation from "@/components/PokemonAnimation"
+import HomeStatusBar from "@/components/home/HomeStatusBar"
 import ProfileCard from "@/components/ProfileCard"
 import PackOpeningSimulator from "@/components/PackOpeningSimulator"
 
@@ -115,6 +119,9 @@ function goToNext(index: number) {
 }
 
 export default function PokemonCardsPage() {
+  const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
   const [focusedIndex, setFocusedIndex] = useState(1) // start with middle card focused
   const wheelRef = useRef<HTMLDivElement>(null)
   const centerSlotRef = useRef<HTMLDivElement>(null)
@@ -286,161 +293,209 @@ export default function PokemonCardsPage() {
     return offset;
   };
 
+  const inputCls =
+    "rounded-lg border border-border bg-background text-foreground px-3 py-2 text-xl placeholder:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#00a8ff] w-full sm:w-auto"
+
   return (
-    <div className="p-8 font-nintendo-ds-bios">
-      <h1 className="text-6xl font-bold mb-4">Pete's Pokemon Collection!</h1>
-      <p className="text-3xl">Check out Pete's top hits.</p>
-
-      <div
-        ref={wheelRef}
-        tabIndex={0}
-        role="group"
-        aria-label="Pokemon cards carousel"
-        className="relative py-8 min-h-[380px] outline-none overflow-visible"
-        style={{ perspective: "1000px" }}
-      >
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          {CARD_PROPS.map((cardProps, cardIndex) => {
-            const offset = getOffset(cardIndex)
-            const isCenter = offset === 0
-            const scale = isCenter ? 1 : 0.85
-            const width = isCenter ? slotWidth : sideCardWidth
-            const translateX = offset * SLOT_STEP_PX
-            return (
-              <div
-                key={cardIndex}
-                ref={isCenter ? centerSlotRef : undefined}
-                className="absolute left-1/2 flex-shrink-0 transition-all duration-300 ease-out"
-                style={{
-                  width,
-                  transform: `translate(calc(-50% + ${translateX}px), -50%) scale(${scale})`,
-                  zIndex: isCenter ? 10 : 0,
-                }}
-              >
-                <ProfileCard
-                  {...cardProps}
-                  className="w-full aspect-[5.1/7]"
-                />
-
-              </div>
-            )
-          })}
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-nintendo-ds-bios">
+      {/* 3DS top screen */}
+      <div className="relative h-[35vh] min-h-[220px] w-full overflow-hidden border-b-4 border-[#333333]">
+        <div className="absolute inset-0">
+          {mounted && (
+            <Image
+              src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
+              alt=""
+              width={800}
+              height={400}
+              className="h-full w-full object-cover pixelated"
+              priority
+            />
+          )}
+          <PokemonAnimation />
         </div>
       </div>
 
-
-      {/* Search card */}
-      <section className="mt-12 border-t border-gray-200 pt-8" aria-label="Search card">
-        <h2 className="text-3xl font-nintendo-ds-bios mb-3">Search a card</h2>
-        <div className="flex flex-wrap items-center gap-2 text-2xl">
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Card name..."
-            className="rounded-lg border border-gray-300 px-3 py-2 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Card name search"
-          />
-          <input
-            type="text"
-            value={searchSet}
-            onChange={(e) => setSearchSet(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Set (e.g. sv08)"
-            className="rounded-lg border border-gray-300 px-3 py-2 min-w-[120px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Filter by set ID"
-          />
-          <input
-            type="text"
-            value={searchRarity}
-            onChange={(e) => setSearchRarity(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Rarity (e.g. SIR, IR, Rare)"
-            className="rounded-lg border border-gray-300 px-3 py-2 min-w-[120px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Filter by rarity (SIR, IR, SAR, etc.)"
-            title="Supports shorthand: SIR, IR, SAR, UR, RR, Common, Rare, etc."
-          />
-          <button
-            type="button"
-            onClick={handleSearch}
-            disabled={searchLoading}
-            className="rounded-lg bg-blue-600 text-white px-4 py-2 font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {searchLoading ? "Loading…" : "Search"}
-          </button>
-          <button
-            type="button"
-            onClick={handleRandomCard}
-            disabled={searchLoading}
-            className="rounded-lg bg-purple-600 text-white px-4 py-2 font-medium hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {searchLoading ? "Loading…" : "Random card"}
-          </button>
+      {/* 3DS bottom screen */}
+      <div className="flex flex-1 flex-col">
+        <HomeStatusBar />
+        {/* page title (kept off the top screen so the Pokémon run in the open) */}
+        <div className="border-b-4 border-[#00a8ff] bg-card px-4 py-3 md:px-8 md:py-4">
+          <h1 className="text-4xl leading-none md:text-6xl">Pokémon Cards</h1>
+          <p className="mt-2 text-lg opacity-85 md:text-2xl">Pete&apos;s top hits, card search &amp; pack opening</p>
         </div>
-        {searchError && (
-          <p className="text-red-600 text-sm mb-4" role="alert">{searchError}</p>
-        )}
-        {searchedCard && (
-          <div className="flex flex-col items-center gap-4 mt-8">
-            <div className="w-full max-w-[280px] aspect-[5/7] relative">
-              {!imageLoaded && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-100 rounded-[30px] animate-pulse" aria-hidden="true">
-                  <span className="text-gray-400 text-xl">Loading image…</span>
-                </div>
-              )}
-              <ProfileCard
-                avatarUrl={getHighResImageUrl(searchedCard.image)}
-                name={searchedCard.name}
-                behindGlowEnabled={true}
-                iconUrl="/images/pokeball.png"
-                grainUrl="https://www.transparenttextures.com/patterns/grain.png"
-                className="w-full h-full aspect-[5/7]"
-              />
-              {/* Hidden image to track load for high-res URL; ProfileCard doesn't expose onLoad */}
-              <img
-                src={getHighResImageUrl(searchedCard.image)}
-                alt=""
-                className="sr-only"
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageLoaded(true)}
-              />
-            </div>
-            <div className="text-xl text-gray-700 text-center space-y-1">
-              {searchedCard.set?.name && (
-                <p><strong>Set:</strong> {searchedCard.set.name}</p>
-              )}
-              {searchedCard.rarity && (
-                <p><strong>Rarity:</strong> {searchedCard.rarity}</p>
-              )}
-              {(() => {
-                const tcg = searchedCard.pricing?.tcgplayer
-                const cm = searchedCard.pricing?.cardmarket
-                const usd =
-                  tcg?.market ?? tcg?.mid ?? (cm?.avg != null ? Number(cm.avg) * EUR_TO_USD : null)
-                if (usd != null) {
-                  return (
-                    <p><strong>Market Price (USD):</strong> ${Number(usd).toFixed(2)}</p>
-                  )
-                }
-                return null
-              })()}
-            </div>
-            <a
-              href={getTCGplayerUrl(searchedCard)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center rounded-lg bg-amber-500 text-white px-4 py-2 font-medium hover:bg-amber-600 transition-colors"
-            >
-              View on TCGplayer
-            </a>
+        <main className="mx-auto w-full max-w-6xl flex-1 p-4 md:p-6">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <Link href="/" className="rounded-md bg-muted px-3 py-1 text-xl hover:opacity-80">
+              ◀ HOME
+            </Link>
+            <nav className="flex flex-wrap gap-2 text-xl" aria-label="Page sections">
+              <a href="#collection" className="rounded-md bg-card px-3 py-1 hover:text-[#00a8ff]">Collection</a>
+              <a href="#search" className="rounded-md bg-card px-3 py-1 hover:text-[#00a8ff]">Search</a>
+              <a href="#packs" className="rounded-md bg-card px-3 py-1 hover:text-[#00a8ff]">Open a pack</a>
+            </nav>
           </div>
-        )}
-      </section>
 
-      <PackOpeningSimulator />
+          {/* Collection */}
+          <section id="collection" className="mb-6 scroll-mt-4 rounded-lg border border-border bg-card p-4" aria-label="Collection">
+            <h2 className="mb-1 text-3xl">Collection</h2>
+            <p className="mb-2 text-xl opacity-75">Check out Pete&apos;s top hits. Scroll or use the arrow keys to flip through.</p>
+            <div
+              ref={wheelRef}
+              tabIndex={0}
+              role="group"
+              aria-label="Pokemon cards carousel"
+              className="relative min-h-[380px] overflow-hidden rounded-md bg-muted/40 py-8 outline-none focus-visible:ring-2 focus-visible:ring-[#00a8ff]"
+              style={{ perspective: "1000px" }}
+            >
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                {CARD_PROPS.map((cardProps, cardIndex) => {
+                  const offset = getOffset(cardIndex)
+                  const isCenter = offset === 0
+                  const scale = isCenter ? 1 : 0.85
+                  const width = isCenter ? slotWidth : sideCardWidth
+                  const translateX = offset * SLOT_STEP_PX
+                  return (
+                    <div
+                      key={cardIndex}
+                      ref={isCenter ? centerSlotRef : undefined}
+                      className="absolute left-1/2 flex-shrink-0 transition-all duration-300 ease-out"
+                      style={{
+                        width,
+                        transform: `translate(calc(-50% + ${translateX}px), -50%) scale(${scale})`,
+                        zIndex: isCenter ? 10 : 0,
+                      }}
+                    >
+                      <div className="transition-transform duration-200 hover:-translate-y-1">
+                        <ProfileCard
+                          {...cardProps}
+                          className="w-full aspect-[5.1/7]"
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </section>
 
-      <Link href="/about" className="text-blue-500 block mt-8">← Back to About</Link>
+          {/* Search card */}
+          <section id="search" className="mb-6 scroll-mt-4 rounded-lg border border-border bg-card p-4" aria-label="Search card">
+            <h2 className="mb-3 text-3xl">Search a card</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                placeholder="Card name..."
+                className={`${inputCls} sm:min-w-[200px]`}
+                aria-label="Card name search"
+              />
+              <input
+                type="text"
+                value={searchSet}
+                onChange={(e) => setSearchSet(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                placeholder="Set (e.g. sv08)"
+                className={`${inputCls} sm:min-w-[120px]`}
+                aria-label="Filter by set ID"
+              />
+              <input
+                type="text"
+                value={searchRarity}
+                onChange={(e) => setSearchRarity(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                placeholder="Rarity (e.g. SIR, IR, Rare)"
+                className={`${inputCls} sm:min-w-[120px]`}
+                aria-label="Filter by rarity (SIR, IR, SAR, etc.)"
+                title="Supports shorthand: SIR, IR, SAR, UR, RR, Common, Rare, etc."
+              />
+              <button
+                type="button"
+                onClick={handleSearch}
+                disabled={searchLoading}
+                className="rounded-lg bg-[#00a8ff] px-4 py-2 text-xl text-white hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {searchLoading ? "Loading…" : "Search"}
+              </button>
+              <button
+                type="button"
+                onClick={handleRandomCard}
+                disabled={searchLoading}
+                className="rounded-lg bg-[#ffcc00] px-4 py-2 text-xl text-black hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {searchLoading ? "Loading…" : "Random card"}
+              </button>
+            </div>
+            {searchError && (
+              <p className="mt-3 text-xl text-red-500" role="alert">{searchError}</p>
+            )}
+            {searchedCard && (
+              <div className="mt-8 flex flex-col items-center gap-4">
+                <div className="relative aspect-[5/7] w-full max-w-[280px]">
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 z-10 flex animate-pulse items-center justify-center rounded-[30px] bg-muted" aria-hidden="true">
+                      <span className="text-xl opacity-60">Loading image…</span>
+                    </div>
+                  )}
+                  <ProfileCard
+                    avatarUrl={getHighResImageUrl(searchedCard.image)}
+                    name={searchedCard.name}
+                    behindGlowEnabled={true}
+                    iconUrl="/images/pokeball.png"
+                    grainUrl="https://www.transparenttextures.com/patterns/grain.png"
+                    className="w-full h-full aspect-[5/7]"
+                  />
+                  {/* Hidden image to track load for high-res URL; ProfileCard doesn't expose onLoad */}
+                  <img
+                    src={getHighResImageUrl(searchedCard.image)}
+                    alt=""
+                    className="sr-only"
+                    onLoad={() => setImageLoaded(true)}
+                    onError={() => setImageLoaded(true)}
+                  />
+                </div>
+                <div className="space-y-1 text-center text-xl">
+                  {searchedCard.set?.name && (
+                    <p><strong>Set:</strong> {searchedCard.set.name}</p>
+                  )}
+                  {searchedCard.rarity && (
+                    <p><strong>Rarity:</strong> {searchedCard.rarity}</p>
+                  )}
+                  {(() => {
+                    const tcg = searchedCard.pricing?.tcgplayer
+                    const cm = searchedCard.pricing?.cardmarket
+                    const usd =
+                      tcg?.market ?? tcg?.mid ?? (cm?.avg != null ? Number(cm.avg) * EUR_TO_USD : null)
+                    if (usd != null) {
+                      return (
+                        <p><strong>Market Price (USD):</strong> ${Number(usd).toFixed(2)}</p>
+                      )
+                    }
+                    return null
+                  })()}
+                </div>
+                <a
+                  href={getTCGplayerUrl(searchedCard)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center rounded-lg bg-[#ffcc00] px-4 py-2 text-xl text-black transition-opacity hover:opacity-80"
+                >
+                  View on TCGplayer
+                </a>
+              </div>
+            )}
+          </section>
+
+          {/* Pack opening */}
+          <section id="packs" className="mb-6 scroll-mt-4 overflow-x-hidden rounded-lg border border-border bg-card p-4" aria-label="Open a pack">
+            {/* simulator renders its own heading; keep it readable in both themes */}
+            <div className="[&_.text-black]:text-foreground [&>section]:mt-0 [&>section]:-mx-0">
+              <PackOpeningSimulator />
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
   )
 }

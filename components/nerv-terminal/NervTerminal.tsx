@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { evaFontVars } from "../evaFonts";
 import { startTerminal } from "./engine";
-import { LAUNCH_KEY, OPEN_CHAT_KEY } from "./keys";
+import { LAUNCH_KEY } from "./keys";
+import RetroChatroom from "../RetroChatroom";
+import BlackjackOverlay from "../blackjack/BlackjackOverlay";
 import "./terminal.css";
 
 // The NERV terminal at /terminal. The markup is static; engine.js drives it.
@@ -13,6 +15,9 @@ import "./terminal.css";
 export default function NervTerminal() {
   const rootRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  // the `chat` command opens the chatroom right over the terminal
+  const [chatOpen, setChatOpen] = useState(false);
+  const [blackjackOpen, setBlackjackOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
   // the engine is started once; it reads the latest theme through this ref
   const themeRef = useRef(resolvedTheme);
@@ -33,12 +38,12 @@ export default function NervTerminal() {
     return startTerminal(root, {
       launched,
       go: (path: string) => router.push(path),
-      openChat: () => {
-        try {
-          sessionStorage.setItem(OPEN_CHAT_KEY, "1");
-        } catch {}
-        router.push("/");
+      openBlackjack: () => {
+        // the table has no text field to take focus, so let go of the prompt
+        (document.activeElement as HTMLElement | null)?.blur();
+        setBlackjackOpen(true);
       },
+      openChat: () => setChatOpen(true),
       replayIntro: () => {
         try {
           sessionStorage.removeItem("eva-boot-seen");
@@ -113,6 +118,21 @@ export default function NervTerminal() {
         <span className="led" />
       </div>
       <input id="nt-cmd" autoComplete="off" autoCapitalize="off" spellCheck={false} aria-label="Terminal command" />
+      <BlackjackOverlay
+        isOpen={blackjackOpen}
+        onClose={() => {
+          setBlackjackOpen(false);
+          rootRef.current?.querySelector<HTMLInputElement>("#nt-cmd")?.focus({ preventScroll: true });
+        }}
+      />
+      <RetroChatroom
+        isOpen={chatOpen}
+        onClose={() => {
+          setChatOpen(false);
+          // back to the prompt
+          rootRef.current?.querySelector<HTMLInputElement>("#nt-cmd")?.focus({ preventScroll: true });
+        }}
+      />
     </div>
   );
 }

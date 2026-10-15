@@ -592,7 +592,8 @@ export default function BlackjackGame({ cardSize = 104 }: { cardSize?: number })
         border: "2px outset #c0c0c0",
         boxShadow:
           "inset -1px -1px 0px 0px #000000, inset 1px 1px 0px 0px #ffffff, inset -2px -2px 0px 0px #808080",
-        maxWidth: 720,
+        // the window grows with the cards (720px at the default 104px cards)
+        maxWidth: Math.round(size * 6.92),
         margin: "0 auto",
       }}
     >

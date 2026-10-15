@@ -1,7 +1,7 @@
 // NERV terminal engine. Drives the markup rendered by NervTerminal.tsx directly.
 // startTerminal(root, actions) returns a cleanup; everything it starts is stopped there.
 //
-// actions: { launched, go(path), openChat(), replayIntro(), toggleTheme() => "light" | "dark" }
+// actions: { launched, go(path), openChat(), openBlackjack(), replayIntro(), toggleTheme() => "light" | "dark" }
 
 const PAGES = {
   home: { ep: "01", jp: "ホーム", img: "lucario" },
@@ -18,10 +18,16 @@ const LINKS = {
 };
 // taken from the real /projects and /skills pages
 const PROJECTS = [
-  ["Mahjong", "3D mahjong game built with Three.js, React, and TypeScript, featuring realistic tile physics and multiplayer support."],
-  ["LaunchPad", "Uses AI to turn GitHub repos into onboarding videos, built with Gemini, Tavus, GitHub API, Node.js, Python, and TSX."],
-  ["LoveBubbles", "A Valentine's-themed collage generator with a Python backend, JS frontend, and Black Forest Labs' Flux 1.1 Ultra model."],
-  ["LeetRizz", "A LeetCode-style game built with TSX and a Python backend that rates a user's 'rizz', or charisma."],
+  ["Capital Sage", "1st Place, Aparavi/Google/Toolhouse Hackathon 2025. Personal finance tool offering stock recommendations, using Toolhouse AI and Gemini for market analysis."],
+  ["LaunchPad", "2nd Place Windsurf + 3rd Place Tavus, NVIDIA GTC 2025. An AI agent that onboards junior developers to GitHub repos with video walkthroughs."],
+  ["Love Bubbles", "3rd Place, AGI House Hackathon 2025. AI-generated Valentine's cards with celebrity themes, using Flux 1.1 Ultra."],
+  ["LeetRizz", "People's Choice, Compsigh Hackathon. A LeetCode-style game that measures a user's charisma with AI-driven scoring."],
+  ["Hong Kong Mahjong", "3D Hong Kong mahjong in the browser against three computer players, with faan-based scoring."],
+  ["WebGun", "Browser-based low-poly multiplayer Gun Game FPS with a 20-weapon ladder, an authoritative server and AI bots."],
+  ["Workflow Memory", "Agents solve a web task once with TinyFish; it's compiled into a saved workflow anyone can rerun faster and cheaper."],
+  ["PulseAI", "MCP & A2A AWS Hackathon 2025. Summarizes tweets into newsletters using AWS services."],
+  ["DonsFlow", "Donshack 2025. A YouTube browser with integrated notes, quiz generation and magic-link login."],
+  ["Wildfire Logger & Prediction Tool", "Wildfire analysis tools built on NASA and Google Copernicus data."],
   ["Course Planner", "A tool to help students plan their course schedule efficiently."],
 ];
 const SKILLS = [
@@ -152,14 +158,14 @@ export function startTerminal(root, actions) {
         break;
       }
       case "chat":
-        print('opening chatroom.sh on the surface ... <span class="ok">OK</span>');
-        await wait(500);
+        print('opening chatroom.sh ... <span class="ok">OK</span>');
+        await wait(300);
         actions.openChat();
         break;
       case "blackjack":
         print('launching blackjack.exe ... <span class="ok">OK</span>');
-        await wait(500);
-        actions.go("/blackjack");
+        await wait(300);
+        actions.openBlackjack();
         break;
       case "intro":
         print('replaying intro.mp4 ... <span class="ok">OK</span>');
@@ -363,8 +369,10 @@ export function startTerminal(root, actions) {
 
   // ---------- input wiring ----------
   on(input, "input", syncTyped);
+  // the chatroom / blackjack table open over the terminal (components/pokeball): keys aren't for the prompt
+  const overlayOpen = () => !!document.querySelector(".pokeball-backdrop, .pokeball-window-in");
   on(input, "keydown", (e) => {
-    if (busy) { e.preventDefault(); return; }
+    if (busy || overlayOpen()) { e.preventDefault(); return; }
     if (e.key === "Enter") { e.preventDefault(); submit(); }
     else if (e.key === "ArrowUp") { e.preventDefault(); if (hIdx > 0) { input.value = cmdHistory[--hIdx]; syncTyped(); } }
     else if (e.key === "ArrowDown") { e.preventDefault(); hIdx = Math.min(cmdHistory.length, hIdx + 1); input.value = cmdHistory[hIdx] || ""; syncTyped(); }
@@ -397,6 +405,9 @@ export function startTerminal(root, actions) {
   // start typing anywhere and it lands in the prompt
   on(window, "keydown", (e) => {
     if (document.activeElement === input || e.metaKey || e.ctrlKey || e.altKey) return;
+    const a = document.activeElement;
+    if (a && (/^(input|textarea|select)$/i.test(a.tagName) || a.isContentEditable)) return;
+    if (overlayOpen()) return;
     if (e.key.length === 1 && !busy && !(e.target.closest && e.target.closest("[data-cmd]"))) input.focus({ preventScroll: true });
   });
 

@@ -9,7 +9,11 @@ import TextType from "@/components/TextType";
 import RetroChatroom from "@/components/RetroChatroom";
 import EvangelionBoot, { replayEvaIntro } from "@/components/evaIntro";
 import TerminalLaunch, { CRT_TARGET_ATTR, launchTerminal } from "@/components/nerv-terminal/TerminalLaunch";
-import { OPEN_CHAT_KEY } from "@/components/nerv-terminal/keys";
+import AppGrid from "@/components/home/AppGrid";
+import AppBanner from "@/components/home/AppBanner";
+import HomeStatusBar from "@/components/home/HomeStatusBar";
+import BlackjackOverlay from "@/components/blackjack/BlackjackOverlay";
+import type { HomeApp } from "@/components/home/apps";
 
   const pokemonRunGifs = [
     "/images/jolteon-run.gif",
@@ -25,8 +29,12 @@ export default function Home() {
   const [showSecondPokemon, setShowSecondPokemon] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isChatroomOpen, setIsChatroomOpen] = useState(false);
+  const [isBlackjackOpen, setIsBlackjackOpen] = useState(false);
+  // the HOME menu tile whose banner is on the top screen
+  const [selectedApp, setSelectedApp] = useState<HomeApp | null>(null);
+  const [bannerTouch, setBannerTouch] = useState(false);
   const { theme, setTheme } = useTheme();
-  const heroTitle = "Pete Thambundit's Portfolio V0.2.6";
+  const heroTitle = "Pete Thambundit's Portfolio V1.0.0";
   const heroSubtitle = "Developer Advocate, CS Student & Pokemon Trainer";
 
   // List of Pokemon run GIFs
@@ -35,13 +43,6 @@ export default function Home() {
   // Set isClient to true when component mounts (client-side only)
   useEffect(() => {
     setMounted(true);
-    // the terminal's `chat` command sends visitors here with this flag set
-    try {
-      if (sessionStorage.getItem(OPEN_CHAT_KEY) === "1") {
-        sessionStorage.removeItem(OPEN_CHAT_KEY);
-        setIsChatroomOpen(true);
-      }
-    } catch {}
   }, []);
 
   // Pokemon animation effect
@@ -158,8 +159,11 @@ export default function Home() {
           </div>
         )}
 
-        {/* Hero Content */}
-        <div className="absolute bottom-10 left-0 right-0 p-4 text-center">
+        {/* Selected app banner (3DS HOME menu) */}
+        {selectedApp && <AppBanner key={selectedApp.id} app={selectedApp} touch={bannerTouch} />}
+
+        {/* Hero Content: hidden (not unmounted, so the typing doesn't restart) while a banner shows */}
+        <div className={`absolute bottom-10 left-0 right-0 p-4 text-center ${selectedApp ? "invisible" : ""}`}>
           <TextType
             as="h1"
             text={heroTitle}
@@ -182,6 +186,7 @@ export default function Home() {
 
       {/* 3DS Bottom Screen */}
       <div className="relative flex flex-1 flex-col bg-background">
+        <HomeStatusBar />
         {/* Main Content Area */}
         <div className="flex-1 p-4">
           <div className="mb-6 rounded-lg border border-border bg-card p-4 backdrop-blur-xl">
@@ -220,186 +225,29 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Folder Grid with Navigation Buttons */}
-          <div className="grid grid-cols-5 gap-10">
-            <Link href="/" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/lucario.png"
-                  width={48}
-                  height={48}
-                  alt="Home"
-                  className="pixelated"
-                />
-              </div>
-              <span className="mt-1 text-xl text-foreground">
-                Home
-              </span>
-            </Link>
-
-            <Link href="/projects" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/umbreon.png"
-                  width={32}
-                  height={32}
-                  alt="Projects"
-                  className="pixelated"
-                />
-              </div>
-              <span className="mt-1 text-xl text-foreground">
-                Projects
-              </span>
-            </Link>
-
-            <Link href="/skills" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/greninja.png"
-                  width={48}
-                  height={48}
-                  alt="Skills"
-                  className="pixelated"
-                />
-              </div>
-              <span className="mt-1 text-xl text-foreground">
-                Skills
-              </span>
-            </Link>
-
-            <Link href="/contact" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/beldum.png"
-                  width={48}
-                  height={48}
-                  alt="Contact"
-                  className="pixelated"
-                />
-              </div>
-              <span className="mt-1 text-xl text-foreground">
-                Contact
-              </span>
-            </Link>
-
-            <Link href="/about" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/machamp.png"
-                  width={32}
-                  height={32}
-                  alt="About"
-                  className="pixelated"
-                />
-              </div>
-              <span className="mt-1 text-xl text-foreground">
-                About
-              </span>
-            </Link>
-
-            <Link href="" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/spheal.png"
-                  width={32}
-                  height={32}
-                  alt=""
-                  className="pixelated"
-                />
-              </div>
-              <span className="mt-1 text-xl text-foreground"></span>
-            </Link>
-
-            <Link href="/about" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/whooper.png"
-                  width={32}
-                  height={32}
-                  alt=""
-                  className="pixelated"
-                />
-              </div>
-              <span className="mt-1 text-xl text-foreground"></span>
-            </Link>
-
-            <Link href="/about" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/aurorus.png"
-                  width={32}
-                  height={32}
-                  alt=""
-                  className="pixelated"
-                />
-              </div>
-              <span className="mt-1 text-xl text-foreground"></span>
-            </Link>
-            <Link href="/" className="flex flex-col items-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-md bg-[#333]/20 folder-select">
-                <Image
-                  src="/images/metagross.png"
-                  width={48}
-                  height={48}
-                  alt=""
-                  className="pixelated"
-                />
-              </div>
-            </Link>
-          </div>
+          {/* HOME menu: every tile opens something; Interests is a folder */}
+          <AppGrid
+            selectedId={selectedApp?.id ?? null}
+            onSelect={(app, touch) => {
+              setSelectedApp(app);
+              setBannerTouch(touch);
+            }}
+            onAction={(action) => {
+              if (action === "terminal") launchTerminal();
+              else if (action === "chat") setIsChatroomOpen(true);
+              else if (action === "blackjack") setIsBlackjackOpen(true);
+              else if (action === "intro") replayEvaIntro();
+            }}
+            disabled={isChatroomOpen || isBlackjackOpen}
+          />
         </div>
 
         {/* Bottom Navigation Bar */}
         <div className="relative border-t-2 border-[#333]">
           {/* Main Navigation with Pokeball */}
           <div className="flex items-center justify-between bg-muted p-2">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={replayEvaIntro}
-                className="flex h-12 w-12 items-center justify-center rounded-md bg-black p-1 hover:opacity-80 transition-opacity cursor-pointer"
-                aria-label="Replay intro"
-                title="Replay intro"
-              >
-                <span className="text-sm leading-none text-[#ff8a1f] font-nintendo-ds-bios">EVA</span>
-              </button>
-              
-              <button
-                onClick={() => setIsChatroomOpen(true)}
-                className="flex h-12 w-12 items-center justify-center rounded-md bg-white p-1 hover:opacity-80 transition-opacity cursor-pointer"
-                aria-label="Open Chatroom"
-              >
-                <Image
-                  src="/images/pokeball.png"
-                  width={40}
-                  height={40}
-                  alt="Pokeball"
-                  className="pixelated"
-                />
-              </button>
-
-              <Link
-                href="/blackjack"
-                aria-label="Play Blackjack"
-                className="flex h-12 w-12 items-center justify-center rounded-md bg-white p-1 hover:opacity-80 transition-opacity"
-              >
-                <Image
-                  src="/images/masterball-new.png"
-                  width={40}
-                  height={40}
-                  alt="Blackjack"
-                  className="pixelated"
-                />
-              </Link>
-
-              <button
-                onClick={launchTerminal}
-                className="flex h-12 w-12 items-center justify-center rounded-md bg-black p-1 hover:opacity-80 transition-opacity cursor-pointer border-2 border-[#ff8a1f]"
-                aria-label="Open the terminal"
-                title="Open the terminal"
-              >
-                <span className="text-sm leading-none text-[#ff8a1f] font-mono">&gt;_</span>
-              </button>
-            </div>
+            {/* the old shortcuts (intro, chat, blackjack, terminal) are tiles in the HOME menu now */}
+            <div className="flex-1" />
 
             <div className="flex items-center gap-4">
               <Link
@@ -452,8 +300,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div>
-            </div>
+            <div className="flex-1" />
           </div>
 
           {/* Bottom Status Bar - Empty as requested */}
@@ -463,6 +310,7 @@ export default function Home() {
         </div>
       </div>
       <RetroChatroom isOpen={isChatroomOpen} onClose={() => setIsChatroomOpen(false)} />
+      <BlackjackOverlay isOpen={isBlackjackOpen} onClose={() => setIsBlackjackOpen(false)} />
     </div>
     </>
   );

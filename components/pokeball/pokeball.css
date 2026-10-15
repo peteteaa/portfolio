@@ -1,0 +1,38 @@
+/* Pokéball opening animation (usePokeballOpen.tsx): ball throw -> flash -> window springs out. Used by the chatroom and the blackjack table */
+.pokeball-backdrop { animation: pokeball-fade-in 0.2s ease-out; }
+@keyframes pokeball-fade-in { from { opacity: 0; } }
+
+.pokeball-ball {
+  position: fixed; left: 0; top: 0; width: 48px; height: 48px;
+  image-rendering: pixelated; pointer-events: none; z-index: 100001;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.45));
+}
+
+/* the window grows out of the ball's position (the middle of the screen) with a little overshoot */
+.pokeball-window-in { animation: pokeball-pop 0.32s cubic-bezier(0.2, 1.4, 0.4, 1) both; transform-origin: 50% 50%; }
+@keyframes pokeball-pop {
+  0% { transform: scale(0.04); opacity: 0; filter: brightness(4); }
+  45% { opacity: 1; }
+  100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+}
+.pokeball-window-out { animation: pokeball-shrink 0.18s ease-in both; transform-origin: 50% 50%; }
+@keyframes pokeball-shrink { to { transform: scale(0.04); opacity: 0; filter: brightness(3); } }
+.pokeball-backdrop-out { animation: pokeball-fade-out 0.18s ease-in both; }
+@keyframes pokeball-fade-out { to { opacity: 0; } }
+
+/* the white burst as the ball opens */
+.pokeball-flash {
+  position: absolute; left: 50%; top: 50%; width: 140%; aspect-ratio: 1; border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0); pointer-events: none; z-index: 5;
+  background: radial-gradient(circle, #fff 0 30%, rgba(255, 255, 255, 0.6) 45%, rgba(255, 255, 255, 0) 70%);
+  animation: pokeball-burst 0.45s ease-out forwards;
+}
+@keyframes pokeball-burst {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pokeball-backdrop, .pokeball-window-in, .pokeball-window-out, .pokeball-backdrop-out, .pokeball-flash { animation: none; }
+}

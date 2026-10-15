@@ -3,207 +3,225 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ChevronLeft } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
 import { useTheme } from "next-themes"
 import PokemonAnimation from "@/components/PokemonAnimation"
+import HomeStatusBar from "@/components/home/HomeStatusBar"
+import { FEATURED, STACK, TOOLHOUSE_APPS, projectAnchor, type Shot, type WebProject } from "@/components/projects/data"
+
+const AWARD_COUNT = FEATURED.reduce((n, p) => n + (p.awards?.length ?? 0), 0)
 
 export default function ProjectsPage() {
-  const [currentTime, setCurrentTime] = useState("")
-  const [currentDate, setCurrentDate] = useState("")
   const { theme } = useTheme()
-
+  const [mounted, setMounted] = useState(false)
+  // full-size screenshot viewer: which project's shots, and which one
+  const [viewer, setViewer] = useState<{ shots: Shot[]; i: number } | null>(null)
+  useEffect(() => setMounted(true), [])
+  // arriving from a skill's "used in" link (/projects#love-bubbles): scroll to that card and highlight it.
+  // In-app links change the URL without a real hash jump, so :target alone doesn't work
+  const [highlight, setHighlight] = useState<string | null>(null)
   useEffect(() => {
-    // Set initial time and date
-    updateDateTime()
-
-    // Update time every minute
-    const interval = setInterval(updateDateTime, 60000)
-
-    return () => clearInterval(interval)
+    const go = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1))
+      if (!id) return
+      setHighlight(id)
+      requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }))
+    }
+    go()
+    window.addEventListener("hashchange", go)
+    return () => window.removeEventListener("hashchange", go)
   }, [])
 
-  const updateDateTime = () => {
-    const now = new Date()
-
-    // Format time as HH:MM
-    const hours = now.getHours().toString().padStart(2, "0")
-    const minutes = now.getMinutes().toString().padStart(2, "0")
-    setCurrentTime(`${hours}:${minutes}`)
-
-    // Format date as M/D (Day)
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    const month = now.getMonth() + 1
-    const day = now.getDate()
-    const dayName = days[now.getDay()]
-    setCurrentDate(`${month}/${day} (${dayName})`)
-  }
-
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
-      {/* 3DS Top Screen */}
-      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-nintendo-ds-bios">
+      {/* 3DS top screen */}
+      <div className="relative h-[35vh] min-h-[220px] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
-          <Image
-            src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
-            alt="Sky Background"
-            width={800}
-            height={400}
-            className="h-full w-full object-cover pixelated"
-            priority
-          />
+          {mounted && (
+            <Image
+              src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
+              alt=""
+              width={800}
+              height={400}
+              className="h-full w-full object-cover pixelated"
+              priority
+            />
+          )}
           <PokemonAnimation />
-        </div>
-
-        {/* Status Bar */}
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white">
-          <div className="flex items-center gap-1">
-            <div className="h-4 w-4 bg-[#33ccff]"></div>
-            <span>Internet</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>⭐ 800</span>
-            <span>{currentDate}</span>
-            <span>{currentTime}</span>
-            <div className="h-4 w-8 bg-[#ffcc00]"></div>
-          </div>
-        </div>
-
-        {/* Page Title */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-4">
-          <h1 className="text-xl font-bold text-white">Projects</h1>
         </div>
       </div>
 
-      {/* 3DS Bottom Screen */}
-      <div className="relative flex flex-1 flex-col bg-background">
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-auto p-4">
-          <div className="mb-4 flex items-center">
-            <Link href="/">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="mr-2 h-8 w-8 rounded-full bg-muted"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
+      {/* 3DS bottom screen */}
+      <div className="flex flex-1 flex-col">
+        <HomeStatusBar />
+        {/* page title (kept off the top screen so the Pokémon run in the open) */}
+        <div className="border-b-4 border-[#00a8ff] bg-card px-4 py-3 md:px-8 md:py-4">
+          <h1 className="text-4xl leading-none md:text-6xl">Projects</h1>
+          <p className="mt-2 text-lg opacity-85 md:text-2xl">Hackathon wins &amp; things I&apos;ve shipped</p>
+        </div>
+        <main className="mx-auto w-full max-w-6xl flex-1 p-4 md:p-6">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <Link href="/" className="rounded-md bg-muted px-3 py-1 text-xl hover:opacity-80">
+              ◀ HOME
             </Link>
-            <h2 className="text-lg font-bold text-foreground">My Projects</h2>
+            <div className="flex flex-wrap gap-2 text-xl">
+              <span className="rounded-md bg-card px-3 py-1">{FEATURED.length + TOOLHOUSE_APPS.length} projects</span>
+              <span className="rounded-md bg-card px-3 py-1">🏆 {AWARD_COUNT} hackathon awards</span>
+            </div>
           </div>
 
-          <div className="grid gap-4">
-            {[
-              {
-                title: "Mahjong",
-                description: "3D mahjong game built with Three.js, React, and TypeScript, featuring realistic tile physics and multiplayer support.",
-                image: "/images/metagross.png",
-                winner: true,
-              },
-              {
-                title: "LaunchPad",
-                description: "LaunchPad uses AI to turn GitHub repos into onboarding videos, built with Gemini, Tavus, GitHub API, Node.js, Python, and TSX.",
-                image: "/images/beldum.png",
-                winner: true,
-                winnerDescription: "2x Winner At Creators Corner NVIDIA GTC Hack-Windsurf 2nd Place, Tavus 3rd Place"
-              },
-              {
-                title: "LoveBubbles",
-                description: "Lovebubbles is a Valentine's-themed collage generator that uses a Python backend, JS frontend, and Black Forest Labs' Flux 1.1 Ultra model, built with Windsurf IDE and Codeium",
-                image: "/images/spheal.png",
-                winner: true,
-                winnerDescription: "Winner at AGI House Romantic Hacker-Windsurf 3rd Place"
-              },
-              {
-                title: "LeetRizz",
-                description: "LeetRizz is a LeetCode-style game built with TSX and a Python backend that rates a user's 'rizz', or charisma",
-                image: "/images/greninja.png",
-                winner: true,
-                winnerDescription: "USFCA Bloom-People's Choice"
-              },
-              {
-                title: "Course Planner",
-                description: "A tool to help students plan their course schedule efficiently",
-                image: "/images/lucario.png",
-                winner: false
-              },
-            ].map((project, index) => (
-              <Card
-                key={index}
-                className="overflow-hidden border border-border bg-card relative"
-              >
-                <div className="flex items-start gap-3 p-3">
-                  <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-border bg-muted">
-                    <Image
-                      src={project.image || "/placeholder.svg"}
-                      width={64}
-                      height={64}
-                      alt={project.title}
-                      className="h-full w-full object-contain p-1 pixelated"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold text-foreground">{project.title}</h3>
-                      {project.winner && (
-                        <div className="tooltip-container">
-                          <Badge className="bg-green-500 text-white text-xs px-2 py-0.5 border border-[#333] cursor-help">
-                            Winner 🏆
-                          </Badge>
-                          <style jsx>{`
-                            .tooltip-container {
-                              position: relative;
-                              display: inline-block;
-                            }
-                            .tooltip-container:hover .tooltip {
-                              visibility: visible;
-                              opacity: 1;
-                            }
-                            .tooltip {
-                              visibility: hidden;
-                              position: absolute;
-                              z-index: 100;
-                              left: 0;
-                              top: 100%;
-                              margin-top: 5px;
-                              width: auto;
-                              width: max-content;
-                              max-width: min(700px, 80vw);
-               
-                              white-space: normal;
-                              background-color: rgba(0, 0, 0, 0.9);
-                              color: white;
-                              text-align: left;
-                              padding: 8px;
-                              border-radius: 6px;
-                              border: 1px solid #333;
-                              font-size: 0.75rem;
-                              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                              opacity: 0;
-                              transition: opacity 0.3s;
-                            }
-                          `}</style>
-                          <div className="tooltip">
-                            {project.winnerDescription || "This project won recognition at a hackathon or competition for its innovation and execution."}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground">{project.description}</p>
-                  </div>
-                </div>
-              </Card>
+          <section className="mb-6 rounded-lg border border-border bg-card p-4">
+            {Object.entries(STACK).map(([group, items]) => (
+              <div key={group} className="mb-2 flex flex-wrap items-baseline gap-2 last:mb-0">
+                <span className="mr-1 text-xl opacity-70">{group}</span>
+                {items.map((s) => (
+                  <span key={s} className="rounded bg-muted px-2 py-0.5 text-lg">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </section>
+
+          <h2 className="mb-3 text-3xl">Projects &amp; hackathons</h2>
+          <div className="mb-10 grid gap-5 md:grid-cols-2">
+            {FEATURED.map((p) => (
+              <ProjectCard key={p.name} project={p} highlight={highlight} onOpen={(i) => p.shots && setViewer({ shots: p.shots, i })} />
             ))}
           </div>
-        </div>
 
-        {/* Bottom Status Bar - Empty as requested */}
-        <div className="border-t border-border bg-background p-2 text-center text-sm">
-          <p></p>
+          <h2 className="mb-1 text-3xl">Toolhouse example apps</h2>
+          <p className="mb-3 text-xl opacity-75">Example apps from my Developer Advocate work at Toolhouse, showcasing its integrations.</p>
+          <div className="grid gap-5 md:grid-cols-2">
+            {TOOLHOUSE_APPS.map((p) => (
+              <ProjectCard key={p.name} project={p} highlight={highlight} onOpen={(i) => p.shots && setViewer({ shots: p.shots, i })} />
+            ))}
+          </div>
+        </main>
+      </div>
+
+      {viewer && <ShotViewer shots={viewer.shots} start={viewer.i} onClose={() => setViewer(null)} />}
+    </div>
+  )
+}
+
+function ProjectCard({ project: p, onOpen, highlight }: { project: WebProject; onOpen: (i: number) => void; highlight?: string | null }) {
+  const [i, setI] = useState(0)
+  const shot = p.shots?.[i]
+  return (
+    <article
+      id={projectAnchor(p.name)}
+      className={`flex scroll-mt-4 flex-col overflow-hidden rounded-lg border border-border bg-card ${highlight === projectAnchor(p.name) ? "ring-4 ring-[#00a8ff]" : ""}`}
+    >
+      {/* screenshot, or a placeholder screen with the project's sprite */}
+      <div className="relative aspect-video w-full overflow-hidden border-b border-border bg-[#0b1220]">
+        {shot ? (
+          <button className="group block h-full w-full" onClick={() => onOpen(i)} aria-label={`View ${p.name} screenshot full size`}>
+            <Image
+              src={shot.src}
+              alt={shot.alt}
+              width={shot.w}
+              height={shot.h}
+              sizes="(min-width: 768px) 560px, 100vw"
+              className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
+            />
+            <span className="absolute bottom-2 right-2 rounded bg-black/70 px-2 py-0.5 text-base text-white opacity-0 transition-opacity group-hover:opacity-100">
+              ⤢ View
+            </span>
+          </button>
+        ) : (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-white/70">
+            <Image src={p.sprite} width={64} height={64} alt="" className="h-16 w-16 object-contain pixelated" />
+            <span className="text-lg">No screenshot yet</span>
+          </div>
+        )}
+        {p.awards && (
+          <div className="absolute left-2 top-2 flex flex-wrap gap-1">
+            {p.awards.map((a) => (
+              <span key={a} className="rounded bg-[#ffcc00] px-2 py-0.5 text-base leading-tight text-black shadow">
+                🏆 {a}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {p.shots && p.shots.length > 1 && (
+        <div className="flex gap-2 border-b border-border bg-muted/40 p-2">
+          {p.shots.map((s, n) => (
+            <button
+              key={s.src}
+              onClick={() => setI(n)}
+              aria-label={`Show screenshot ${n + 1}`}
+              className={`h-12 w-20 overflow-hidden rounded border-2 ${n === i ? "border-[#00a8ff]" : "border-transparent opacity-70 hover:opacity-100"}`}
+            >
+              <Image src={s.src} alt="" width={160} height={96} className="h-full w-full object-cover object-top" />
+            </button>
+          ))}
         </div>
+      )}
+
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="text-3xl leading-none">{p.name}</h3>
+        {p.event && <p className="mt-1 text-lg opacity-70">{p.event}</p>}
+        <p className="mt-3 text-xl leading-snug">{p.summary}</p>
+        {p.stack.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {p.stack.map((s) => (
+              <span key={s} className="rounded bg-muted px-2 py-0.5 text-base">
+                {s}
+              </span>
+            ))}
+          </div>
+        )}
+        {(p.live || p.repo) && (
+          <div className="mt-auto flex gap-3 pt-4 text-xl">
+            {p.live && (
+              <a href={p.live} target="_blank" rel="noopener noreferrer" className="rounded-md bg-[#00a8ff] px-3 py-1 text-white hover:opacity-85">
+                Live ↗
+              </a>
+            )}
+            {p.repo && (
+              <a href={p.repo} target="_blank" rel="noopener noreferrer" className="rounded-md bg-muted px-3 py-1 hover:opacity-85">
+                GitHub ↗
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </article>
+  )
+}
+
+function ShotViewer({ shots, start, onClose }: { shots: Shot[]; start: number; onClose: () => void }) {
+  const [i, setI] = useState(start)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+      else if (e.key === "ArrowRight") setI((n) => (n + 1) % shots.length)
+      else if (e.key === "ArrowLeft") setI((n) => (n - 1 + shots.length) % shots.length)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [shots.length, onClose])
+  const s = shots[i]
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-black/85 p-4" onClick={onClose} role="dialog" aria-modal="true" aria-label="Screenshot viewer">
+      <Image src={s.src} alt={s.alt} width={s.w} height={s.h} className="max-h-[80vh] w-auto max-w-full rounded-lg object-contain" onClick={(e) => e.stopPropagation()} />
+      <div className="flex items-center gap-4 text-xl text-white" onClick={(e) => e.stopPropagation()}>
+        {shots.length > 1 && (
+          <button className="rounded bg-white/15 px-3 py-1 hover:bg-white/25" onClick={() => setI((n) => (n - 1 + shots.length) % shots.length)}>
+            ◀
+          </button>
+        )}
+        <span className="opacity-80">{s.alt}</span>
+        {shots.length > 1 && (
+          <button className="rounded bg-white/15 px-3 py-1 hover:bg-white/25" onClick={() => setI((n) => (n + 1) % shots.length)}>
+            ▶
+          </button>
+        )}
+        <button className="rounded bg-white/15 px-3 py-1 hover:bg-white/25" onClick={onClose}>
+          ✕
+        </button>
       </div>
     </div>
   )

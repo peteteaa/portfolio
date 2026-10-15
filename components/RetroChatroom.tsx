@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { PokeballFlash, backdropClass, usePokeballOpen, windowClass } from "./pokeball/usePokeballOpen";
 
 export interface ChatMessage {
   id: string;
@@ -58,11 +59,14 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
     scrollToBottom();
   }, [messages]);
 
+  // opens with the Pokéball throw (shared with the blackjack table)
+  const { phase, ballThrow, close } = usePokeballOpen(isOpen, onClose);
+
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    if (phase === "open" && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isOpen]);
+  }, [phase]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -212,10 +216,12 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
 
   if (!isOpen || !mounted) return null;
 
+  if (phase === "throw") return ballThrow;
+
   const chatroomContent = (
     <div 
-      className="fixed inset-0 flex items-center justify-center"
-      onClick={onClose}
+      className={`fixed inset-0 flex items-center justify-center ${backdropClass(phase)}`}
+      onClick={close}
       style={{
         zIndex: 99999,
         backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -242,8 +248,10 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
           opacity: 1,
           pointerEvents: "auto"
         }}
+        className={windowClass(phase)}
         onClick={(e) => e.stopPropagation()}
       >
+        {phase === "open" && <PokeballFlash />}
         <div style={{
           backgroundColor: "#000080",
           color: "#fff",
@@ -261,7 +269,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
           <div style={{ display: "flex", gap: "2px" }}>
             <button 
               aria-label="Close" 
-              onClick={onClose}
+              onClick={close}
               style={{
                 width: "16px",
                 height: "14px",

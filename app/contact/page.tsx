@@ -3,263 +3,133 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ChevronLeft } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { useTheme } from "next-themes"
 import PokemonAnimation from "@/components/PokemonAnimation"
+import HomeStatusBar from "@/components/home/HomeStatusBar"
+
+const EMAIL = "pthambundit[at]icloud.com"
+
+const CONTACTS = [
+  {
+    label: "Email",
+    handle: EMAIL,
+    href: `mailto:${EMAIL}`,
+    icon: "/images/mail-icon.png",
+    external: false,
+  },
+  {
+    label: "GitHub",
+    handle: "github.com/peteteaa",
+    href: "https://github.com/peteteaa",
+    icon: "/images/github-icon.png",
+    external: true,
+  },
+  {
+    label: "LinkedIn",
+    handle: "linkedin.com/in/pete-thambundit",
+    href: "https://www.linkedin.com/in/pete-thambundit-91b740324/",
+    icon: "/images/linkedin-icon.png",
+    external: true,
+  },
+  {
+    label: "Instagram",
+    handle: "instagram.com/pete_teaa",
+    href: "https://www.instagram.com/pete_teaa/",
+    icon: "/images/instagram-icon.png",
+    external: true,
+  },
+]
 
 export default function ContactPage() {
-  const [currentTime, setCurrentTime] = useState("")
-  const [currentDate, setCurrentDate] = useState("")
-  const [name, setName] = useState("")
-  const [message, setMessage] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
   const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  const [copied, setCopied] = useState(false)
+  useEffect(() => setMounted(true), [])
 
-  useEffect(() => {
-    // Set initial time and date
-    updateDateTime()
-
-    // Update time every minute
-    const interval = setInterval(updateDateTime, 60000)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  const updateDateTime = () => {
-    const now = new Date()
-
-    // Format time as HH:MM
-    const hours = now.getHours().toString().padStart(2, "0")
-    const minutes = now.getMinutes().toString().padStart(2, "0")
-    setCurrentTime(`${hours}:${minutes}`)
-
-    // Format date as M/D (Day)
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    const month = now.getMonth() + 1
-    const day = now.getDate()
-    const dayName = days[now.getDay()]
-    setCurrentDate(`${month}/${day} (${dayName})`)
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    } catch (error) {
+      console.error("Copy failed:", error)
+    }
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground font-retro">
-      {/* 3DS Top Screen */}
-      <div className="relative h-[35vh] w-full overflow-hidden border-b-4 border-[#333333]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground font-nintendo-ds-bios">
+      {/* 3DS top screen */}
+      <div className="relative h-[35vh] min-h-[220px] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
-          <Image
-            src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
-            alt="Sky Background"
-            width={800}
-            height={400}
-            className="h-full w-full object-cover pixelated"
-            priority
-          />
+          {mounted && (
+            <Image
+              src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
+              alt=""
+              width={800}
+              height={400}
+              className="h-full w-full object-cover pixelated"
+              priority
+            />
+          )}
           <PokemonAnimation />
-        </div>
-
-        {/* Status Bar */}
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between bg-[#0066cc]/80 p-2 text-xs text-white">
-          <div className="flex items-center gap-1">
-            <div className="h-4 w-4 bg-[#33ccff]"></div>
-            <span>Internet</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>⭐ 800</span>
-            <span>{currentDate}</span>
-            <span>{currentTime}</span>
-            <div className="h-4 w-8 bg-[#ffcc00]"></div>
-          </div>
-        </div>
-
-        {/* Page Title */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-4">
-          <h1 className="text-xl font-bold text-white">Contact</h1>
         </div>
       </div>
 
-      {/* 3DS Bottom Screen */}
-      <div className="relative flex flex-1 flex-col bg-background">
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-auto p-4">
-          <div className="mb-4 flex items-center">
-            <Link href="/">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="mr-2 h-8 w-8 rounded-full bg-muted"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
+      {/* 3DS bottom screen */}
+      <div className="flex flex-1 flex-col">
+        <HomeStatusBar />
+        {/* page title (kept off the top screen so the Pokémon run in the open) */}
+        <div className="border-b-4 border-[#00a8ff] bg-card px-4 py-3 md:px-8 md:py-4">
+          <h1 className="text-4xl leading-none md:text-6xl">Contact</h1>
+          <p className="mt-2 text-lg opacity-85 md:text-2xl">Add me to your friend list</p>
+        </div>
+        <main className="mx-auto w-full max-w-6xl flex-1 p-4 md:p-6">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <Link href="/" className="rounded-md bg-muted px-3 py-1 text-xl hover:opacity-80">
+              ◀ HOME
             </Link>
-            <h2 className="text-lg font-bold text-foreground">Contact Me</h2>
+            <span className="min-w-0 max-w-full rounded-md bg-card px-3 py-1 text-xl">
+              Developer Advocate → Forward Deployed Engineer at Toolhouse, San Francisco
+            </span>
           </div>
 
-          <Card className="mb-4 border border-border bg-card p-4">
-            <form 
-              className="space-y-3"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                if (!name.trim() || !message.trim() || isSubmitting) return;
+          <h2 className="mb-3 text-3xl">Friend list</h2>
+          <div className="mb-3 grid gap-4 sm:grid-cols-2">
+            {CONTACTS.map((c) => (
+              <a
+                key={c.label}
+                href={c.href}
+                {...(c.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="group flex flex-wrap items-center gap-x-4 gap-y-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-[#00a8ff]"
+              >
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-muted">
+                  <Image src={c.icon} width={40} height={40} alt="" className="h-10 w-10 object-contain pixelated" />
+                </div>
+                <div className="min-w-0 flex-1 basis-40">
+                  <p className="text-3xl leading-none">{c.label}</p>
+                  <p className="mt-1 break-all text-xl opacity-75">{c.handle}</p>
+                </div>
+                <span className="ml-auto shrink-0 rounded-md bg-[#00a8ff] px-3 py-1 text-xl text-white group-hover:opacity-85">
+                  Open ↗
+                </span>
+              </a>
+            ))}
+          </div>
 
-                setIsSubmitting(true);
-                setSubmitStatus("idle");
-
-                try {
-                  const fullMessage = `contact : "${name.trim()}" message : "${message.trim()}"`;
-                  
-                  const response = await fetch("https://agents.toolhouse.ai/e5f9236f-e9f4-4ec0-8de9-3c63e09d7ac4", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      message: fullMessage,
-                    }),
-                    mode: "cors",
-                  });
-
-                  if (response.ok) {
-                    // Don't display response on success, just clear the form
-                    setSubmitStatus("success");
-                    setName("");
-                    setMessage("");
-                  } else {
-                    const errorText = await response.text();
-                    console.error("Response error:", response.status, errorText);
-                    setSubmitStatus("error");
-                  }
-                } catch (error: any) {
-                  console.error("Error submitting form:", error);
-                  setSubmitStatus("error");
-                } finally {
-                  setIsSubmitting(false);
-                }
-              }}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="rounded-md bg-[#ffcc00] px-3 py-1 text-xl text-black hover:opacity-85"
             >
-              <div className="space-y-1">
-                <label htmlFor="name" className="block text-xs font-medium text-foreground">
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded border border-input bg-background p-2 text-xs text-foreground focus:border-ring focus:outline-none"
-                  placeholder="Your Name"
-                  required
-                />
-              </div>
-  
-              <div className="space-y-1">
-                <label htmlFor="message" className="block text-xs font-medium text-foreground">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="w-full rounded border border-input bg-background p-2 text-xs text-foreground focus:border-ring focus:outline-none"
-                  placeholder="Hi, I'd like to discuss a project..."
-                  required
-                ></textarea>
-              </div>
-              {submitStatus === "success" && (
-                <div className="rounded border border-green-500 bg-green-50 p-2 text-xs text-green-700">
-                  Message sent successfully!
-                </div>
-              )}
-              {submitStatus === "error" && (
-                <div className="rounded border border-red-500 bg-red-50 p-2 text-xs text-red-700">
-                  Failed to send message. Please try again.
-                </div>
-              )}
-              <Button 
-                type="submit"
-                disabled={isSubmitting || !name.trim() || !message.trim()}
-                className="w-full px-4 py-1 text-xs"
-              >
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </Button>
-            </form>
-          </Card>
+              Copy email
+            </button>
+            <span aria-live="polite" className="text-xl text-[#00a8ff]">
+              {copied ? "Copied!" : ""}
+            </span>
+          </div>
 
-          <Card className="border border-border bg-card p-4">
-            <h3 className="mb-3 text-sm font-bold text-foreground">Connect With Me</h3>
-            <div className="space-y-3">
-              <a
-                href="mailto:pthambundit@icloud.com"
-                className="flex items-center gap-3 transition-opacity hover:opacity-80"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-transparent">
-                  <Image src="/images/mail-icon.png" width={24} height={24} alt="Email" className="pixelated" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Email</p>
-                  <p className="text-xs font-medium text-foreground">pthambundit@icloud.com</p>
-                </div>
-              </a>
-              <a 
-                href="https://github.com/peteteaa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 transition-opacity hover:opacity-80"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-transparent">
-                  <Image src="/images/github-icon.png" width={24} height={24} alt="GitHub" className="pixelated" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">GitHub</p>
-                  <p className="text-xs font-medium text-foreground">github.com/peteteaa</p>
-                </div>
-              </a>
-              <a 
-                href="https://www.linkedin.com/in/pete-thambundit-91b740324" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 transition-opacity hover:opacity-80"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-transparent">
-                  <Image src="/images/linkedin-icon.png" width={24} height={24} alt="LinkedIn" className="pixelated" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">LinkedIn</p>
-                  <p className="text-xs font-medium text-foreground">linkedin.com/in/pete-thambundit</p>
-                </div>
-              </a>
-              <a
-                href="https://www.instagram.com/pete_teaa/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 transition-opacity hover:opacity-80"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-transparent">
-                  <Image
-                    src="/images/instagram-icon.png"
-                    width={24}
-                    height={24}
-                    alt="Instagram"
-                    className="pixelated"
-                  />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Instagram</p>
-                  <p className="text-xs font-medium text-foreground">instagram.com/pete_teaa</p>
-                </div>
-              </a>
-            </div>
-          </Card>
-        </div>
-
-        {/* Bottom Status Bar - Empty as requested */}
-        <div className="border-t border-border bg-background p-2 text-center text-sm">
-          <p></p>
-        </div>
+        </main>
       </div>
     </div>
   )
