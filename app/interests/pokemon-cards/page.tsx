@@ -77,20 +77,12 @@ const CARD_PROPS = [//carasouel cards
   {
     avatarUrl: "https://tcgplayer-cdn.tcgplayer.com/product/478065_in_1000x1000.jpg",
     name: "Pokemon Collector",
-    title: "Card Enthusiast",
-    handle: "the_pokemon_collector",
-    status: "Collecting Pokemon Cards",
-    showUserInfo: false,
     behindGlowEnabled: true,
     iconUrl: "/images/pokeball.png",
     grainUrl: "https://www.transparenttextures.com/patterns/grain.png",
   },{
     avatarUrl: "https://tcgplayer-cdn.tcgplayer.com/product/478071_in_1000x1000.jpg",
     name: "Pokemon Collector",
-    title: "Card Enthusiast",
-    handle: "the_pokemon_collector",
-    status: "Collecting Pokemon Cards",
-    showUserInfo: false,
     behindGlowEnabled: true,
     iconUrl: "/images/pokeball.png",
     grainUrl: "https://www.transparenttextures.com/patterns/grain.png",
@@ -400,8 +392,6 @@ export default function PokemonCardsPage() {
               <ProfileCard
                 avatarUrl={getHighResImageUrl(searchedCard.image)}
                 name={searchedCard.name}
-                title={searchedCard.set?.name ?? ""}
-                showUserInfo={false}
                 behindGlowEnabled={true}
                 iconUrl="/images/pokeball.png"
                 grainUrl="https://www.transparenttextures.com/patterns/grain.png"

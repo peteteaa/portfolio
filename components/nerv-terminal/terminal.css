@@ -111,3 +111,5 @@
   .nerv-term .flick, .nerv-term .grain, .nerv-term .hx, .nerv-term .crt::after { animation: none; }
 }
 
+/* neofetch + ls only show at home (~) */
+.nerv-term .panes.away .pinned { display: none; }

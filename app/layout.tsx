@@ -11,7 +11,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" />
         <title>pthambundit.dev</title>
         {/* runs before first paint: if the boot intro will play, keep the page black until it appears */}
         <script
@@ -19,7 +18,6 @@ export default function RootLayout({
             __html: `try{if(location.pathname==="/"&&sessionStorage.getItem("eva-boot-seen")!=="1")document.documentElement.classList.add("eva-boot-pending")}catch(e){}`,
           }}
         />
-        <meta name="description" content="" />
       </head>
       <body className="font-retro">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={["light", "dark"]}>
@@ -29,7 +27,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-export const metadata = {
-      generator: 'v0.dev'
-    };

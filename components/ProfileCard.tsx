@@ -14,8 +14,6 @@ const ANIMATION_CONFIG = {
 
 const clamp = (v: number, min = 0, max = 100): number => Math.min(Math.max(v, min), max);
 const round = (v: number, precision = 3): number => parseFloat(v.toFixed(precision));
-const adjust = (v: number, fMin: number, fMax: number, tMin: number, tMax: number): number =>
-  round(tMin + ((tMax - tMin) * (v - fMin)) / (fMax - fMin));
 
 // Inject keyframes once
 const KEYFRAMES_ID = 'pc-keyframes';
@@ -23,10 +21,6 @@ if (typeof document !== 'undefined' && !document.getElementById(KEYFRAMES_ID)) {
   const style = document.createElement('style');
   style.id = KEYFRAMES_ID;
   style.textContent = `
-    @keyframes pc-holo-bg {
-      0% { background-position: 0 var(--background-y), 0 0, center; }
-      100% { background-position: 0 var(--background-y), 90% 90%, center; }
-    }
     @keyframes pc-icon-scroll {
       0% { 
         -webkit-mask-position: 0 0;
@@ -42,7 +36,6 @@ if (typeof document !== 'undefined' && !document.getElementById(KEYFRAMES_ID)) {
 }
 
 interface ProfileCardProps {
-  href?: string;
   avatarUrl?: string;
   iconUrl?: string;
   grainUrl?: string;
@@ -54,14 +47,7 @@ interface ProfileCardProps {
   enableTilt?: boolean;
   enableMobileTilt?: boolean;
   mobileTiltSensitivity?: number;
-  miniAvatarUrl?: string;
   name?: string;
-  title?: string;
-  handle?: string;
-  status?: string;
-  contactText?: string;
-  showUserInfo?: boolean;
-  onContactClick?: () => void;
 }
 
 interface TiltEngine {
@@ -69,12 +55,10 @@ interface TiltEngine {
   setTarget: (x: number, y: number) => void;
   toCenter: () => void;
   beginInitial: (durationMs: number) => void;
-  getCurrent: () => { x: number; y: number; tx: number; ty: number };
   cancel: () => void;
 }
 
 const ProfileCardComponent: React.FC<ProfileCardProps> = ({
-  href,
   avatarUrl = ' ',
   iconUrl = ' ',
   grainUrl = ' ',
@@ -86,20 +70,12 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   enableTilt = true,
   enableMobileTilt = false,
   mobileTiltSensitivity = 5,
-  miniAvatarUrl,
-  name = 'Javi A. Torres',
-  title = 'Software Engineer',
-  handle = 'javicodes',
-  status = 'Online',
-  contactText = 'Contact',
-  showUserInfo = true,
-  onContactClick
+  name = 'Javi A. Torres'
 }) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
 
   const enterTimerRef = useRef<number | null>(null);
-  const leaveRafRef = useRef<number | null>(null);
 
   const tiltEngine = useMemo<TiltEngine | null>(() => {
     if (!enableTilt) return null;
@@ -134,11 +110,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
       const properties: Record<string, string> = {
         '--pointer-x': `${percentX}%`,
         '--pointer-y': `${percentY}%`,
-        '--background-x': `${adjust(percentX, 0, 100, 35, 65)}%`,
-        '--background-y': `${adjust(percentY, 0, 100, 35, 65)}%`,
-        '--pointer-from-center': `${clamp(Math.hypot(percentY - 50, percentX - 50) / 50, 0, 1)}`,
-        '--pointer-from-top': `${percentY / 100}`,
-        '--pointer-from-left': `${percentX / 100}`,
         '--rotate-x': `${round(-(centerX / 5))}deg`,
         '--rotate-y': `${round(centerY / 4)}deg`
       };
@@ -201,9 +172,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
         initialUntil = performance.now() + durationMs;
         start();
       },
-      getCurrent(): { x: number; y: number; tx: number; ty: number } {
-        return { x: currentX, y: currentY, tx: targetX, ty: targetY };
-      },
       cancel(): void {
         if (rafId) cancelAnimationFrame(rafId);
         rafId = null;
@@ -233,7 +201,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
 
-      shell.classList.add('active');
       shell.classList.add('entering');
       if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
       enterTimerRef.current = window.setTimeout(() => {
@@ -251,19 +218,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
     if (!shell || !tiltEngine) return;
 
     tiltEngine.toCenter();
-
-    const checkSettle = (): void => {
-      const { x, y, tx, ty } = tiltEngine!.getCurrent();
-      const settled = Math.hypot(tx - x, ty - y) < 0.6;
-      if (settled) {
-        shell!.classList.remove('active');
-        leaveRafRef.current = null;
-      } else {
-        leaveRafRef.current = requestAnimationFrame(checkSettle);
-      }
-    };
-    if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);
-    leaveRafRef.current = requestAnimationFrame(checkSettle);
   }, [tiltEngine]);
 
   const handleDeviceOrientation = useCallback(
@@ -336,7 +290,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
       shell.removeEventListener('click', handleClick);
       window.removeEventListener('deviceorientation', deviceOrientationHandler);
       if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
-      if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);
       tiltEngine.cancel();
       shell.classList.remove('entering');
     };
@@ -361,15 +314,8 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
       '--behind-glow-size': behindGlowSize ?? '50%',
       '--pointer-x': '50%',
       '--pointer-y': '50%',
-      '--pointer-from-center': '0',
-      '--pointer-from-top': '0.5',
-      '--pointer-from-left': '0.5',
-      '--card-opacity': '0',
       '--rotate-x': '0deg',
       '--rotate-y': '0deg',
-      '--background-x': '50%',
-      '--background-y': '50%',
-      '--card-radius': cardRadius,
       '--sunpillar-1': 'hsl(2, 100%, 73%)',
       '--sunpillar-2': 'hsl(53, 100%, 69%)',
       '--sunpillar-3': 'hsl(93, 100%, 69%)',
@@ -385,10 +331,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
     }),
     [iconUrl, grainUrl, innerGradient, behindGlowColor, behindGlowSize, cardRadius]
   );
-
-  const handleContactClick = useCallback((): void => {
-    onContactClick?.();
-  }, [onContactClick]);
 
   // Complex styles that require CSS variables and can't be done with Tailwind
   const shineStyle = {
@@ -461,11 +403,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
     borderRadius: cardRadius,
     pointerEvents: 'none'
   };
-const cardContent = (
-    <div>
-      {/* your existing JSX */}
-    </div>
-  );
   return (
     <div
       ref={wrapRef}
@@ -551,37 +488,6 @@ const cardContent = (
           />
         )}
 
-        {/* Overlay content */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full p-8">
-          {showUserInfo && (
-            <div className="mt-auto mb-4 text-center">
-              {miniAvatarUrl && (
-                <img
-                  src={miniAvatarUrl}
-                  alt=""
-                  className="w-8 h-8 rounded-full object-cover mx-auto mb-2"
-                  onError={e => {
-                    const t = e.target as HTMLImageElement;
-                    t.style.opacity = '0.5';
-                    t.src = avatarUrl;
-                  }}
-                />
-              )}
-
-              {onContactClick && (
-                <button
-                  onClick={handleContactClick}
-                  className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors backdrop-blur-sm"
-                >
-                  {contactText}
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* Details content */}
-          
-        </div>
       </div>
     </div>
     

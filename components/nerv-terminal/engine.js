@@ -53,7 +53,7 @@ export function startTerminal(root, actions) {
 
   // a re-run on the same DOM (React dev remounts) starts from a clean screen
   [out, bootlog, pinnedEl, $("nt-honey"), $("nt-wins")].forEach((el) => { el.innerHTML = ""; });
-  panes.classList.remove("stack", "split", "booting");
+  panes.classList.remove("stack", "split", "booting", "away");
   scroll.insertBefore(pinnedEl, scroll.firstChild);
 
   let cwd = "home", busy = false, layout = "inline";
@@ -274,6 +274,8 @@ export function startTerminal(root, actions) {
     await titleCard(t);
     if (!alive) return;
     cwd = t;
+    // neofetch + ls belong to home only
+    panes.classList.toggle("away", t !== "home");
     out.innerHTML = "";
     renderPage(t);
   }

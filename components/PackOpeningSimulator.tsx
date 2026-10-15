@@ -99,12 +99,7 @@ function rarityRank(rarity: string | undefined): number {
 function isSpecialOrUltraRare(rarity: string | undefined): boolean {
   if (!rarity) return false
   const r = rarity.toLowerCase()
-  return (
-    r.includes("special illustration rare") ||
-    r.includes("ultra rare") ||
-    r.includes("special illustration") ||
-    r === "ultra rare"
-  )
+  return r.includes("special illustration") || r.includes("ultra rare")
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -244,20 +239,15 @@ export default function PackOpeningSimulator() {
       for (let i = 0; i < pack.length; i++) {
         const url = getHighResImageUrl(pack[i].image)
         if (!(await imageLoads(url))) {
-          const oldId = pack[i].id
           for (const candidate of shuffle(replacementPool)) {
             if (!(await imageLoads(getHighResImageUrl(candidate.image)))) continue
             pack[i] = candidate
-            packIds.delete(oldId)
-            packIds.add(candidate.id)
             replacementPool.splice(replacementPool.indexOf(candidate), 1)
             break
           }
         }
       }
 
-      const cardUrls = pack.map((c) => getHighResImageUrl(c.image))
-      console.debug("[PackOpeningSimulator] card URLs shown:", cardUrls)
       setPackCards(pack)
       setPhase("ready")
         })(),
@@ -270,13 +260,6 @@ export default function PackOpeningSimulator() {
       setPhase("idle")
     }
   }, [])
-
-  useEffect(() => {
-    if (phase !== "ready" || packCards.length === 0) return
-    const packEl = packRef.current
-    if (!packEl) return
-    gsap.set(packEl, { transformOrigin: "center center" })
-  }, [phase, packCards.length])
 
   const handlePackClick = useCallback(() => {
     if (phase !== "ready" || packCards.length === 0) return
@@ -442,7 +425,7 @@ export default function PackOpeningSimulator() {
           <button
             type="button"
             onClick={buildPack}
-            className="rounded-lg bg-gray-600 text-white px-5 py-3 font-2xl hover:bg-gray-500"
+            className="rounded-lg bg-gray-600 text-white px-5 py-3 hover:bg-gray-500"
           >
             New pack
           </button>
@@ -450,7 +433,7 @@ export default function PackOpeningSimulator() {
       </div>
 
       {phase === "loading" && (
-        <p className="text-gray-400 font-6xl">Loading pack...</p>
+        <p className="text-gray-400">Loading pack...</p>
       )}
 
       {(phase === "ready" || phase === "opening" || phase === "open") && packCards.length > 0 && (

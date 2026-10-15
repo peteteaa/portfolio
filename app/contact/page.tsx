@@ -17,7 +17,6 @@ export default function ContactPage() {
   const [message, setMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
-  const [responseMessage, setResponseMessage] = useState("")
   const { theme } = useTheme()
 
   useEffect(() => {
@@ -108,7 +107,6 @@ export default function ContactPage() {
 
                 setIsSubmitting(true);
                 setSubmitStatus("idle");
-                setResponseMessage("");
 
                 try {
                   const fullMessage = `contact : "${name.trim()}" message : "${message.trim()}"`;
@@ -129,16 +127,13 @@ export default function ContactPage() {
                     setSubmitStatus("success");
                     setName("");
                     setMessage("");
-                    setResponseMessage("");
                   } else {
                     const errorText = await response.text();
                     console.error("Response error:", response.status, errorText);
-                    setResponseMessage("");
                     setSubmitStatus("error");
                   }
                 } catch (error: any) {
                   console.error("Error submitting form:", error);
-                  setResponseMessage("");
                   setSubmitStatus("error");
                 } finally {
                   setIsSubmitting(false);
@@ -179,13 +174,7 @@ export default function ContactPage() {
                   Message sent successfully!
                 </div>
               )}
-              {submitStatus === "error" && responseMessage && (
-                <div className="rounded border border-red-500 bg-red-50 p-2 text-xs text-red-700">
-                  <div className="font-bold mb-1">Error:</div>
-                  <div className="whitespace-pre-wrap">{responseMessage}</div>
-                </div>
-              )}
-              {submitStatus === "error" && !responseMessage && (
+              {submitStatus === "error" && (
                 <div className="rounded border border-red-500 bg-red-50 p-2 text-xs text-red-700">
                   Failed to send message. Please try again.
                 </div>

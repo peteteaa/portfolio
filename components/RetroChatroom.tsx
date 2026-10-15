@@ -62,10 +62,6 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
     }
-    // Debug: Log when chatroom opens/closes
-    if (isOpen) {
-      console.log("Chatroom opened");
-    }
   }, [isOpen]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -220,20 +216,13 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
     <div 
       className="fixed inset-0 flex items-center justify-center"
       onClick={onClose}
-      style={{ 
-        display: "flex",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+      style={{
         zIndex: 99999,
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         pointerEvents: "auto"
       }}
     >
       <div
-        className="window system7"
         style={{ 
           width: "600px", 
           maxWidth: "90vw", 
@@ -255,7 +244,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="title-bar" style={{
+        <div style={{
           backgroundColor: "#000080",
           color: "#fff",
           padding: "2px 4px",
@@ -268,8 +257,8 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
           WebkitFontSmoothing: "none" as any,
           MozOsxFontSmoothing: "unset" as any
         }}>
-          <div className="title-bar-text" style={{ flex: 1 }}>Pete's Chatroom</div>
-          <div className="title-bar-controls" style={{ display: "flex", gap: "2px" }}>
+          <div style={{ flex: 1 }}>Pete's Chatroom</div>
+          <div style={{ display: "flex", gap: "2px" }}>
             <button 
               aria-label="Close" 
               onClick={onClose}
@@ -295,7 +284,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
             </button>
           </div>
         </div>
-        <div className="window-body" style={{ 
+        <div style={{
           display: "flex", 
           flexDirection: "column", 
           height: "calc(100% - 24px)",
@@ -303,7 +292,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
           backgroundColor: "#c0c0c0"
         }}>
           {/* Chat Messages Area */}
-          <div className="inset-panel" style={{ 
+          <div style={{
             flex: 1, 
             overflowY: "auto", 
             padding: "8px", 
@@ -363,7 +352,7 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
           </div>
 
           {/* Input Area */}
-          <form className="retro-chatroom" onSubmit={handleSendMessage} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <form onSubmit={handleSendMessage} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
               <label htmlFor="username" style={{ fontSize: "11px", fontFamily: "Fixedsys, 'Fixedsys Excelsior', 'Courier New', Courier, monospace", fontWeight: "bold", WebkitFontSmoothing: "none" as any, MozOsxFontSmoothing: "unset" as any, color: "#000" }}>
                 Name:
