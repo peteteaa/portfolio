@@ -1,7 +1,7 @@
 // Tiles on the homepage's bottom screen (the 3DS HOME menu). Selecting one shows its banner on the
 // top screen; opening it follows `href` or runs `action`.
 
-export type HomeAction = "terminal" | "chat" | "blackjack" | "intro" | "folder" | "back";
+export type HomeAction = "terminal" | "chat" | "blackjack" | "intro" | "plaza" | "folder" | "back";
 
 export type HomeApp = {
   id: string;
@@ -24,6 +24,7 @@ export const HOME_APPS: HomeApp[] = [
   { id: "pokemon-cards", name: "Cards", title: "Pokémon Cards", tagline: "My collection, a card search & a pack-opening simulator", img: "/images/lucario.png", imgSize: 48, href: "/interests/pokemon-cards" },
   { id: "blackjack", name: "Blackjack", title: "Blackjack", tagline: "Play a hand against the dealer", img: "/images/masterball-new.png", imgSize: 40, action: "blackjack" },
   { id: "chat", name: "Chatroom", title: "Chatroom", tagline: "Chat with PeteBot", img: "/images/pokeball.png", imgSize: 40, action: "chat" },
+  { id: "plaza", name: "Mii Maker", title: "Mii Maker", tagline: "Make a character to walk around the bottom of the site", img: "/images/eevee-run.gif", imgSize: 48, action: "plaza" },
   { id: "intro", name: "Intro", title: "Boot Intro", tagline: "Replay the Evangelion boot sequence", img: "/images/whooper.png", imgSize: 32, action: "intro" },
 ];
 

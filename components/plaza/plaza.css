@@ -1,0 +1,166 @@
+/* The plaza: a strip along the bottom of every page where visitors' characters walk. */
+:root {
+  --plaza-h: 56px;
+  --plaza-grass: #4caf50;
+  --plaza-dirt: #8d6e3f;
+}
+
+.plaza-strip {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--plaza-h);
+  z-index: 40;
+  pointer-events: none;
+  /* faint fade so the ground reads on any background */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0) 70%);
+}
+
+html.eva-boot-pending .plaza-strip {
+  display: none;
+}
+
+/* pixel grass over a dirt line */
+.plaza-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--plaza-dirt);
+  border-top: 2px solid var(--plaza-grass);
+  box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.25);
+  image-rendering: pixelated;
+}
+
+.plaza-walker {
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  width: 32px;
+  height: 48px;
+  pointer-events: auto;
+  will-change: transform;
+  image-rendering: pixelated;
+}
+.plaza-body {
+  display: block;
+  width: 32px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.plaza-body:focus-visible {
+  outline: 2px dashed currentColor;
+  outline-offset: 2px;
+}
+.plaza-walker svg {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* flips the sprite without flipping the bubble */
+.plaza-flip {
+  width: 32px;
+  height: 48px;
+}
+
+/* leg frames: both are rendered, the loop flips data-frame */
+.plaza-walker .plaza-f1 {
+  display: none;
+}
+.plaza-walker[data-frame="1"] .plaza-f0 {
+  display: none;
+}
+.plaza-walker[data-frame="1"] .plaza-f1 {
+  display: block;
+}
+
+.plaza-bubble {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 6px;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 2px 8px;
+  background: #fff;
+  color: #222;
+  border: 2px solid #333;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  font-size: 16px;
+  line-height: 1.2;
+  z-index: 2;
+}
+.plaza-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -4px;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-right: 2px solid #333;
+  border-bottom: 2px solid #333;
+  transform: translateY(-5px) rotate(45deg);
+}
+.plaza-walker:hover .plaza-bubble,
+.plaza-walker:focus-within .plaza-bubble,
+.plaza-walker[data-open="1"] .plaza-bubble {
+  display: flex;
+}
+.plaza-bubble button {
+  pointer-events: auto;
+  border: 2px solid #333;
+  background: #ffd23f;
+  color: #222;
+  padding: 0 6px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.plaza-plus {
+  position: absolute;
+  right: 8px;
+  bottom: 10px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  cursor: pointer;
+  background: #ffd23f;
+  color: #222;
+  border: 3px solid #333;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  font-size: 20px;
+  line-height: 1;
+  image-rendering: pixelated;
+}
+.plaza-plus:hover {
+  background: #ffe27a;
+}
+.plaza-plus:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* maker preview ground */
+.plaza-preview-ground {
+  border-bottom: 4px solid var(--plaza-dirt);
+  box-shadow: inset 0 -6px 0 var(--plaza-grass);
+  image-rendering: pixelated;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plaza-plus:active {
+    transform: none;
+  }
+}

@@ -1,6 +1,7 @@
 import type React from "react"
 import "@/app/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import PlazaStrip from "@/components/plaza/PlazaStrip"
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className="font-retro">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} themes={["light", "dark"]}>
           {children}
+          <PlazaStrip />
         </ThemeProvider>
       </body>
     </html>

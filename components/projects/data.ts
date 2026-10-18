@@ -1,4 +1,4 @@
-// Projects on /projects. Text comes from the resume (Resume 26) and the old /projects page;
+// Projects on /projects. Text comes from the resume (Pete_Thambundit_Resume (2)), the older resume and the old /projects page;
 // screenshots are in public/images/projects (README images or captures of the live sites).
 
 // anchor id for a project's card on /projects (used by the skills page's "used in" links)
@@ -20,6 +20,15 @@ export type WebProject = {
 
 export const FEATURED: WebProject[] = [
   {
+    name: "Workflow Memory",
+    event: "TinyFish × Codex AI-Native Talent Hunt, SF Tech Week 2026",
+    summary: "Turns one-off AI agent web tasks into saved, parameterized workflows that humans or agents can rerun faster and cheaper. A two-phase learn pipeline has Gemini explore a goal with TinyFish search, fetch and browser-agent tools, then compiles the recorded trace into validated workflow JSON; a deterministic executor adds output checks, versioning, run history and Gemini-powered repair of failed steps. Workflows are exposed through an MCP server, a CLI and a Next.js web app with live streaming.",
+    stack: ["TinyFish", "Gemini", "MCP", "Next.js", "TypeScript", "Postgres", "Vercel"],
+    sprite: "/images/spheal.png",
+    live: "https://tinyfish-ochre.vercel.app",
+    repo: "https://github.com/peteteaa/tinyfish",
+  },
+  {
     name: "Capital Sage",
     event: "Aparavi / Google / Toolhouse Hackathon, 2025",
     awards: ["1st Place"],
@@ -36,31 +45,8 @@ export const FEATURED: WebProject[] = [
     sprite: "/images/beldum.png",
   },
   {
-    name: "Love Bubbles",
-    event: "AGI House Hackathon, 2025",
-    awards: ["3rd Place"],
-    summary: "AI-generated Valentine's cards with celebrity themes: a Valentine's collage generator with a Python backend and JS frontend, using Black Forest Labs' Flux 1.1 Ultra.",
-    stack: ["Python", "JavaScript", "Flux 1.1 Ultra", "Windsurf"],
-    sprite: "/images/spheal.png",
-    shots: [
-      { src: "/images/projects/lovebubbles-app.webp", alt: "Love Bubbles app: enter names and generate a card", w: 1280, h: 960 },
-      { src: "/images/projects/lovebubbles-card.webp", alt: "A generated Love Bubbles Valentine's card", w: 1280, h: 960 },
-      { src: "/images/projects/lovebubbles-cards.webp", alt: "Two generated cards in the Love Bubbles app", w: 1280, h: 960 },
-    ],
-    repo: "https://github.com/peteteaa/lovebubbles",
-  },
-  {
-    name: "LeetRizz",
-    event: "Compsigh Hackathon",
-    awards: ["People's Choice"],
-    summary: "A LeetCode-style game that measures a user's charisma (\"rizz\") with AI-driven scoring.",
-    stack: ["TSX", "Python"],
-    sprite: "/images/greninja.png",
-    repo: "https://github.com/peteteaa/leetrizz",
-  },
-  {
     name: "Hong Kong Mahjong",
-    summary: "3D Hong Kong mahjong in the browser: draw, discard and call your way to four sets and a pair against three computer players, with faan-based scoring.",
+    summary: "A fully playable 3D Hong Kong Mahjong game with computer opponents, built and deployed with Three.js. Complete game logic and Hong Kong faan scoring, including tile handling, turn flow and win detection.",
     stack: ["TypeScript", "React", "Three.js"],
     sprite: "/images/umbreon.png",
     shots: [
@@ -69,6 +55,15 @@ export const FEATURED: WebProject[] = [
     ],
     live: "https://peteteaa-mahjong.vercel.app",
     repo: "https://github.com/peteteaa/mahjong-game",
+  },
+  {
+    name: "SDAT Music Player",
+    summary: "An audio-reactive 3D music player in Three.js with real-time visuals driven by playback: pick a tape from the carousel, load it into the SDAT deck and press play.",
+    stack: ["Three.js", "React", "TypeScript", "Vite"],
+    sprite: "/images/whooper.png",
+    shots: [{ src: "/images/projects/sdat-player.webp", alt: "SDAT: a carousel of digital audio tapes beside the SDAT deck", w: 1280, h: 800 }],
+    live: "https://sdat-beta.vercel.app",
+    repo: "https://github.com/peteteaa/sdat",
   },
   {
     name: "WebGun",
@@ -83,19 +78,13 @@ export const FEATURED: WebProject[] = [
     repo: "https://github.com/peteteaa/gungame",
   },
   {
-    name: "Workflow Memory",
-    summary: "Agents shouldn't solve the same web task twice: an agent solves a web task once with TinyFish, the result is compiled into a saved, parameterized workflow, and anyone (human or agent) can rerun it faster and cheaper. The web app streams every TinyFish call live as a workflow is learned.",
-    stack: ["TinyFish", "Gemini", "TypeScript", "Vercel"],
-    sprite: "/images/spheal.png",
-    live: "https://tinyfish-ochre.vercel.app",
-    repo: "https://github.com/peteteaa/tinyfish",
-  },
-  {
-    name: "PulseAI",
-    event: "MCP & A2A AWS Hackathon, 2025",
-    summary: "Summarizes tweets into newsletters using AWS services.",
-    stack: ["AWS", "MCP", "A2A"],
-    sprite: "/images/lunatone.png",
+    name: "LeetRizz",
+    event: "Compsigh Hackathon",
+    awards: ["People's Choice"],
+    summary: "A LeetCode-style game that measures a user's charisma (\"rizz\") with AI-driven scoring.",
+    stack: ["TSX", "Python"],
+    sprite: "/images/greninja.png",
+    repo: "https://github.com/peteteaa/leetrizz",
   },
   {
     name: "DonsFlow",
@@ -103,6 +92,27 @@ export const FEATURED: WebProject[] = [
     summary: "A YouTube browser with integrated notes and quiz generation, plus a magic-link login and database system.",
     stack: ["Magic-link auth"],
     sprite: "/images/whooper.png",
+  },
+  {
+    name: "Love Bubbles",
+    event: "AGI House Hackathon, 2025",
+    awards: ["3rd Place"],
+    summary: "AI-generated Valentine's cards with celebrity themes: a Valentine's collage generator with a Python backend and JS frontend, using Black Forest Labs' Flux 1.1 Ultra.",
+    stack: ["Python", "JavaScript", "Flux 1.1 Ultra", "Windsurf"],
+    sprite: "/images/spheal.png",
+    shots: [
+      { src: "/images/projects/lovebubbles-app.webp", alt: "Love Bubbles app: enter names and generate a card", w: 1280, h: 960 },
+      { src: "/images/projects/lovebubbles-card.webp", alt: "A generated Love Bubbles Valentine's card", w: 1280, h: 960 },
+      { src: "/images/projects/lovebubbles-cards.webp", alt: "Two generated cards in the Love Bubbles app", w: 1280, h: 960 },
+    ],
+    repo: "https://github.com/peteteaa/lovebubbles",
+  },
+  {
+    name: "PulseAI",
+    event: "MCP & A2A AWS Hackathon, 2025",
+    summary: "Summarizes tweets into newsletters using AWS services.",
+    stack: ["AWS", "MCP", "A2A"],
+    sprite: "/images/lunatone.png",
   },
   {
     name: "Wildfire Logger & Prediction Tool",
@@ -143,6 +153,6 @@ export const TOOLHOUSE_APPS: WebProject[] = [
 ];
 
 export const STACK = {
-  Languages: ["Python", "Java", "Golang", "JavaScript", "TypeScript", "HTML"],
-  "Frameworks & tools": ["Git", "MCP", "A2A", "Docker", "AWS", "Vercel", "Zapier", "n8n", "Toolhouse"],
+  Languages: ["Python", "Java", "Go", "JavaScript", "TypeScript"],
+  "Frameworks & tools": ["Git", "Docker", "AWS", "Vercel", "Next.js", "PostgreSQL", "Three.js", "MCP", "A2A", "Toolhouse"],
 };

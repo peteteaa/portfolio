@@ -14,6 +14,7 @@ import AppBanner from "@/components/home/AppBanner";
 import HomeStatusBar from "@/components/home/HomeStatusBar";
 import BlackjackOverlay from "@/components/blackjack/BlackjackOverlay";
 import type { HomeApp } from "@/components/home/apps";
+import { openPlazaMaker } from "@/components/plaza/mine";
 
   const pokemonRunGifs = [
     "/images/jolteon-run.gif",
@@ -237,6 +238,7 @@ export default function Home() {
               else if (action === "chat") setIsChatroomOpen(true);
               else if (action === "blackjack") setIsBlackjackOpen(true);
               else if (action === "intro") replayEvaIntro();
+              else if (action === "plaza") openPlazaMaker();
             }}
             disabled={isChatroomOpen || isBlackjackOpen}
           />

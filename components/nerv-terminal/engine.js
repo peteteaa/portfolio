@@ -18,20 +18,21 @@ const LINKS = {
 };
 // taken from the real /projects and /skills pages
 const PROJECTS = [
-  ["Capital Sage", "1st Place, Aparavi/Google/Toolhouse Hackathon 2025. Personal finance tool offering stock recommendations, using Toolhouse AI and Gemini for market analysis."],
+  ["Workflow Memory", "TinyFish × Codex AI-Native Talent Hunt, SF Tech Week 2026. Turns one-off AI agent web tasks into saved, parameterized workflows anyone can rerun faster and cheaper, via an MCP server, CLI and Next.js app."],
+  ["Capital Sage", "1st Place, Aparavi/Google/Toolhouse Hackathon 2025. Personal finance tool offering stock recommendations, using Toolhouse and Gemini for market analysis."],
   ["LaunchPad", "2nd Place Windsurf + 3rd Place Tavus, NVIDIA GTC 2025. An AI agent that onboards junior developers to GitHub repos with video walkthroughs."],
-  ["Love Bubbles", "3rd Place, AGI House Hackathon 2025. AI-generated Valentine's cards with celebrity themes, using Flux 1.1 Ultra."],
-  ["LeetRizz", "People's Choice, Compsigh Hackathon. A LeetCode-style game that measures a user's charisma with AI-driven scoring."],
-  ["Hong Kong Mahjong", "3D Hong Kong mahjong in the browser against three computer players, with faan-based scoring."],
+  ["Hong Kong Mahjong", "A fully playable 3D Hong Kong Mahjong game in Three.js with computer opponents and complete faan scoring."],
+  ["SDAT Music Player", "An audio-reactive 3D music player in Three.js with real-time visuals driven by playback."],
   ["WebGun", "Browser-based low-poly multiplayer Gun Game FPS with a 20-weapon ladder, an authoritative server and AI bots."],
-  ["Workflow Memory", "Agents solve a web task once with TinyFish; it's compiled into a saved workflow anyone can rerun faster and cheaper."],
+  ["LeetRizz", "People's Choice, Compsigh Hackathon. A game that measures a user's charisma with AI-driven scoring."],
+  ["DonsFlow", "Donshack 2025. A YouTube browser with integrated note-taking, quiz generation and magic-link login."],
+  ["Love Bubbles", "3rd Place, AGI House Hackathon 2025. AI-generated Valentine's cards with celebrity themes, using Flux 1.1 Ultra."],
   ["PulseAI", "MCP & A2A AWS Hackathon 2025. Summarizes tweets into newsletters using AWS services."],
-  ["DonsFlow", "Donshack 2025. A YouTube browser with integrated notes, quiz generation and magic-link login."],
   ["Wildfire Logger & Prediction Tool", "Wildfire analysis tools built on NASA and Google Copernicus data."],
   ["Course Planner", "A tool to help students plan their course schedule efficiently."],
 ];
 const SKILLS = [
-  ["Languages", "JavaScript, TypeScript, Python, Java, C, Golang"],
+  ["Languages", "Python, Java, Go, JavaScript, TypeScript, C"],
   ["Frontend", "React, Next.js, Tailwind CSS"],
   ["Backend", "Node.js, Express, Django, Firebase, MongoDB, PostgreSQL"],
   ["Tools", "Git, Docker, AWS, Figma, Unity"],

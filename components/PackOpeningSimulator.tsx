@@ -331,7 +331,7 @@ export default function PackOpeningSimulator() {
 
   const handlePackHover = useCallback(
     (enter: boolean) => {
-      if (phase !== "ready" || !packRef.current) return
+      if ((phase !== "ready" && phase !== "idle") || !packRef.current) return
       if (enter) {
         gsap.to(packRef.current, {
           duration: 0.08,
@@ -393,6 +393,22 @@ export default function PackOpeningSimulator() {
     [revealNextCard]
   )
 
+  // the pack art is on the page from the start; the first click builds the pack (same path as "New pack")
+  // and opens it as soon as the cards are in
+  const openWhenReady = useRef(false)
+  const handleClosedPackClick = useCallback(() => {
+    if (phase === "ready") return handlePackClick()
+    if (phase !== "idle") return
+    openWhenReady.current = true
+    buildPack()
+  }, [phase, handlePackClick, buildPack])
+  useEffect(() => {
+    if (phase === "idle") openWhenReady.current = false // the build failed: leave the pack closed to try again
+    if (phase !== "ready" || !openWhenReady.current) return
+    openWhenReady.current = false
+    handlePackClick()
+  }, [phase, handlePackClick])
+
   useEffect(() => {
     if (phase !== "open") return
     packCards.forEach((_, i) => {
@@ -406,21 +422,16 @@ export default function PackOpeningSimulator() {
       <h2 className="text-3xl font-semibold mb-3 text-white">Pack opening</h2>
      
       <p className="text-2xl text-black mb-4">
-        Your pack is from: {setName && setId ? `${setName} (${setId}). ` : ""} 
-        <br />
-        Click &quot;Open pack&quot; to load, then click the pack to open. Click the stack to reveal each card.
+        {setName && setId && (
+          <>
+            Your pack is from: {setName} ({setId}).
+            <br />
+          </>
+        )}
+        Click the pack to open it, then click the stack to reveal each card.
       </p>
 
       <div className="flex flex-wrap items-center gap-2 mb-4">
-        {phase === "idle" && (
-          <button
-            type="button"
-            onClick={buildPack}
-            className="rounded-lg bg-amber-600 text-white px-4 py-2 font-medium hover:bg-amber-700"
-          >
-            Open pack
-          </button>
-        )}
         {(phase === "ready" || phase === "open") && (
           <button
             type="button"
@@ -436,17 +447,20 @@ export default function PackOpeningSimulator() {
         <p className="text-gray-400">Loading pack...</p>
       )}
 
-      {(phase === "ready" || phase === "opening" || phase === "open") && packCards.length > 0 && (
+      {/* the pack is always on the table; its cards are built on the first click */}
+      {(phase === "idle" || phase === "loading" || packCards.length > 0) && (
         <div className="relative flex flex-col items-center min-h-[320px]">
           <div
             ref={packRef}
             role="button"
             tabIndex={0}
-            onClick={phase === "ready" ? handlePackClick : undefined}
+            aria-label={phase === "loading" ? "Loading pack" : "Open pack"}
+            aria-busy={phase === "loading"}
+            onClick={phase === "ready" || phase === "idle" ? handleClosedPackClick : undefined}
             onMouseEnter={() => handlePackHover(true)}
             onMouseLeave={() => handlePackHover(false)}
-            onKeyDown={(e) => e.key === "Enter" && phase === "ready" && handlePackClick()}
-            className="relative cursor-pointer select-none rounded-lg overflow-hidden shadow-xl"
+            onKeyDown={(e) => e.key === "Enter" && (phase === "ready" || phase === "idle") && handleClosedPackClick()}
+            className={`relative select-none rounded-lg overflow-hidden shadow-xl ${phase === "loading" ? "cursor-wait animate-pulse" : "cursor-pointer"}`}
             style={{
               visibility: phase === "open" ? "hidden" : "visible",
               perspective: "400px",

@@ -59,6 +59,11 @@ html.eva-boot-pending body {
   background: #000;
 }
 
+/* room for the plaza strip fixed to the bottom of the viewport (components/plaza), only where it renders */
+body:has(.plaza-strip) {
+  padding-bottom: var(--plaza-h, 56px);
+}
+
 /* Retro Font */
 .font-retro {
   font-family: "Press Start 2P", sans-serif;

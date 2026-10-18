@@ -18,12 +18,13 @@ export const SKILLS: Skill[] = [
   s("TypeScript", "Languages", "typescript"),
   s("JavaScript", "Languages", "javascript"),
   s("Java", "Languages", "java"),
-  s("Golang", "Languages", "golang"),
+  s("Go", "Languages", "golang"),
   s("C", "Languages", "c"),
   s("HTML", "Languages", "html"),
   s("React", "Frontend", "react"),
   s("Next.js", "Frontend", "nextjs"),
   s("Tailwind CSS", "Frontend", "tailwind"),
+  s("Three.js", "Frontend", "threejs"),
   s("Figma", "Frontend", "figma"),
   s("Node.js", "Backend & data", "nodejs"),
   s("Express", "Backend & data", "express"),
@@ -48,7 +49,7 @@ export const SPOKEN = ["English (fluent)", "Thai (fluent)"];
 export type Evidence = { label: string; href: string; note?: string };
 
 // project stack names that mean more than one skill
-const ALIASES: Record<string, string[]> = { TSX: ["TypeScript", "React"] };
+const ALIASES: Record<string, string[]> = { TSX: ["TypeScript", "React"], Postgres: ["PostgreSQL"] };
 
 // facts that aren't in the project list
 const EXTRA: Record<string, Evidence[]> = {
