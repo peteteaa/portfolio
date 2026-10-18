@@ -3,11 +3,13 @@ import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 import type { Look, PlazaCharacter } from "./look";
 
-// Redis layout:
+// Redis layout (the free plan has one database, so local dev and preview deploys use "plaza-dev:"
+// keys instead of "plaza:" and never touch the live site's characters):
 //   plaza:char:<id>  JSON StoredCharacter
 //   plaza:recent     zset of ids, scored by createdAt; only the newest KEEP survive
-const RECENT = "plaza:recent";
-const charKey = (id: string) => `plaza:char:${id}`;
+const NS = process.env.VERCEL_ENV === "production" ? "plaza" : "plaza-dev";
+const RECENT = `${NS}:recent`;
+const charKey = (id: string) => `${NS}:char:${id}`;
 const KEEP = 300;
 
 type StoredCharacter = PlazaCharacter & { tokenHash: string };
@@ -22,7 +24,7 @@ function redis() {
 let _createLimit: Ratelimit | null = null;
 export function createLimit() {
   if (!_createLimit) {
-    _createLimit = new Ratelimit({ redis: redis(), limiter: Ratelimit.slidingWindow(3, "1 h"), prefix: "plaza:rl" });
+    _createLimit = new Ratelimit({ redis: redis(), limiter: Ratelimit.slidingWindow(3, "1 h"), prefix: `${NS}:rl` });
   }
   return _createLimit;
 }
