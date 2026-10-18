@@ -86,7 +86,8 @@ export default function PlazaStrip() {
   const place = useCallback((id: string, w: Walker) => {
     const el = els.current.get(id);
     if (!el) return;
-    el.style.transform = `translateX(${w.x.toFixed(1)}px)`;
+    // hop one sprite pixel (scale 2) on the stride frame
+    el.style.transform = `translate(${w.x.toFixed(1)}px, ${w.frame ? -2 : 0}px)`;
     el.dataset.frame = String(w.frame);
     const flip = el.querySelector<HTMLElement>(".plaza-flip");
     // the sprite faces right by default

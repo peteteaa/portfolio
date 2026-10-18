@@ -194,7 +194,10 @@ export default function MiiMakerOverlay({ isOpen, onClose }: { isOpen: boolean; 
         <div className="flex flex-col gap-4 p-3 sm:flex-row">
           <div className="flex shrink-0 flex-col items-center sm:w-[180px]">
             <div className="plaza-preview-ground flex h-[170px] w-full items-end justify-center bg-background pb-[6px]">
-              <CharacterSprite look={look} frame={frame} scale={6} className="pixelated" />
+              {/* hops one sprite pixel on the stride frame, like the walkers */}
+              <div style={{ transform: `translateY(${frame ? -6 : 0}px)` }}>
+                <CharacterSprite look={look} frame={frame} scale={6} className="pixelated" />
+              </div>
             </div>
             <div className="mt-1 text-center text-base">{cleanName(name) ?? "Name"}</div>
           </div>
