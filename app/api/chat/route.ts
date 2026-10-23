@@ -1,6 +1,24 @@
 import { NextRequest } from "next/server";
+import { Redis } from "@upstash/redis";
+import { Ratelimit } from "@upstash/ratelimit";
 
 export const runtime = "edge";
+
+// The Gemini quota is shared by every visitor, so one person (or a script) shouldn't be able to
+// spend it all. This costs one Redis call per message; Gemini still sees exactly one request.
+// Non-production deploys use their own keys, like the plaza does (one free Upstash database).
+const NS = process.env.VERCEL_ENV === "production" ? "chat" : "chat-dev";
+let _limit: Ratelimit | null = null;
+function chatLimit() {
+  if (!_limit) {
+    _limit = new Ratelimit({ redis: Redis.fromEnv(), limiter: Ratelimit.slidingWindow(20, "1 h"), prefix: `${NS}:rl` });
+  }
+  return _limit;
+}
+
+// The client caps input at 200 characters and sends the whole conversation, so bound both.
+const MAX_MESSAGE_CHARS = 500;
+const MAX_HISTORY = 20;
 
 // Free-tier request quota is a per-model daily bucket, and the plain flash models
 // have a very small one (gemini-3.6-flash allows 20/day, which a single visitor
@@ -105,13 +123,25 @@ export async function POST(req: NextRequest) {
 
   const contents = messages
     .filter((msg) => typeof msg?.content === "string" && msg.content.trim())
+    .slice(-MAX_HISTORY)
     .map((msg) => ({
       role: msg.role === "assistant" ? "model" : "user",
-      parts: [{ text: msg.content }],
+      parts: [{ text: msg.content.slice(0, MAX_MESSAGE_CHARS) }],
     }));
 
   if (contents.length === 0) {
     return new Response("No messages provided.", { status: 400 });
+  }
+
+  try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || "local";
+    const { success } = await chatLimit().limit(ip);
+    if (!success) {
+      return new Response("PeteBot needs a breather. You've sent a lot of messages; try again in a bit!", { status: 429 });
+    }
+  } catch (error) {
+    // Redis being down (or unconfigured locally) shouldn't take the chatroom down with it.
+    console.error("Chat rate limit check failed; allowing the message:", error);
   }
 
   const payload = JSON.stringify({
