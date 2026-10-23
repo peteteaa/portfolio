@@ -3,8 +3,8 @@
 import { useState, useCallback, useRef, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useTheme } from "next-themes"
 import PokemonAnimation from "@/components/PokemonAnimation"
+import SkyBackground from "@/components/SkyBackground"
 import HomeStatusBar from "@/components/home/HomeStatusBar"
 import ProfileCard from "@/components/ProfileCard"
 import PackOpeningSimulator from "@/components/PackOpeningSimulator"
@@ -119,9 +119,6 @@ function goToNext(index: number) {
 }
 
 export default function PokemonCardsPage() {
-  const { theme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
   const [focusedIndex, setFocusedIndex] = useState(1) // start with middle card focused
   const wheelRef = useRef<HTMLDivElement>(null)
   const centerSlotRef = useRef<HTMLDivElement>(null)
@@ -301,16 +298,7 @@ export default function PokemonCardsPage() {
       {/* 3DS top screen */}
       <div className="relative h-[35vh] min-h-[220px] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
-          {mounted && (
-            <Image
-              src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
-              alt=""
-              width={800}
-              height={400}
-              className="h-full w-full object-cover pixelated"
-              priority
-            />
-          )}
+          <SkyBackground day="cloud" />
           <PokemonAnimation />
         </div>
       </div>

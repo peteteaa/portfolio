@@ -98,6 +98,12 @@ body:has(.plaza-strip) {
   image-rendering: crisp-edges;
 }
 
+/* PokemonAnimation: 100% is the top screen's width; 310px is its SPRITE + GAP */
+@keyframes pokemon-run {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100% + 310px)); }
+}
+
 /* Custom Cursor */
 html, body {
   cursor: url('/images/cursor.png'), auto;

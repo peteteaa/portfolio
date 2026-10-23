@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 // List of Pokemon run GIFs
@@ -12,106 +12,61 @@ const pokemonRunGifs = [
   "/images/spoink-run.gif",
 ];
 
-export default function PokemonAnimation() {
-  const [jolteonPosition, setJolteonPosition] = useState(-100); // Start off-screen
-  const [pokemonGif, setPokemonGif] = useState("/images/jolteon-run.gif");
-  const [secondPokemonGif, setSecondPokemonGif] = useState<string | null>(null);
-  const [showSecondPokemon, setShowSecondPokemon] = useState(false);
-  const [isClient, setIsClient] = useState(false); // Track if we're on client-side
+// The second Pokemon trails the first by GAP px, and no sprite is wider than SPRITE px, so a run
+// is over once the leader is this far past the right edge (the pokemon-run keyframes in globals.css).
+const SPRITE = 160;
+const GAP = 150;
 
-  // Set isClient to true when component mounts (client-side only)
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+type Run = { id: number; first: string; second: string | null; seconds: number };
 
-  // Pokemon animation effect
-  useEffect(() => {
-    // Only run animation on client-side
-    if (!isClient) return;
+/**
+ * Each run is one pass of a CSS animation across the top screen, so React only renders when a
+ * new run starts, not on every frame. When it ends, a new key restarts it with fresh Pokemon.
+ */
+export default function PokemonAnimation({ speed = 100 }: { speed?: number }) {
+  const track = useRef<HTMLDivElement>(null);
+  const [run, setRun] = useState<Run | null>(null);
 
-    // Animation function
-    const movePokemon = () => {
-      setJolteonPosition((prevPos) => {
-        // Get window width safely
-        const windowWidth = typeof window !== "undefined" ? window.innerWidth : 1000;
+  const nextRun = (id: number, first?: string): Run => {
+    const randomIndex = first ? pokemonRunGifs.indexOf(first) : Math.floor(Math.random() * pokemonRunGifs.length);
 
-        // If Pokemon has moved off the right edge of the screen
-        if (prevPos > windowWidth) {
-          // When reaching the edge, randomly change the Pokemon
-          const randomIndex = Math.floor(Math.random() * pokemonRunGifs.length);
-          setPokemonGif(pokemonRunGifs[randomIndex]);
+    // 30% chance to show a second Pokemon, never the same one
+    let second: string | null = null;
+    if (!first && Math.random() < 0.3) {
+      let secondIndex;
+      do {
+        secondIndex = Math.floor(Math.random() * pokemonRunGifs.length);
+      } while (secondIndex === randomIndex);
+      second = pokemonRunGifs[secondIndex];
+    }
 
-          // 30% chance to show a second Pokemon
-          const showSecond = Math.random() < 0.3;
-          setShowSecondPokemon(showSecond);
+    // measured per run so a resized window keeps the same pace
+    const distance = (track.current?.offsetWidth ?? window.innerWidth) + SPRITE + GAP;
+    return { id, first: pokemonRunGifs[randomIndex], second, seconds: distance / speed };
+  };
 
-          if (showSecond) {
-            // Pick a different Pokemon for the second one
-            let secondIndex;
-            do {
-              secondIndex = Math.floor(Math.random() * pokemonRunGifs.length);
-            } while (secondIndex === randomIndex);
-
-            setSecondPokemonGif(pokemonRunGifs[secondIndex]);
-          } else {
-            setSecondPokemonGif(null);
-          }
-
-          // Reset to left edge
-          return -100;
-        }
-
-        // Move right by 1 pixel
-        return prevPos + 2;
-      });
-    };
-
-    // Move every 20ms (slower animation)
-    const animationInterval = setInterval(movePokemon, 20);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(animationInterval);
-  }, [isClient]);
+  // started after mount: the distance needs the real width, and the server render stays empty
+  useEffect(() => setRun(nextRun(0, "/images/jolteon-run.gif")), []);
 
   return (
-    <>
-      {/* Primary Pokemon GIF */}
-      <div
-        className="absolute z-20 h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40"
-        style={{
-          left: `${jolteonPosition}px`,
-          bottom: "0",
-          transition: "none",
-        }}
-      >
-        <Image
-          src={pokemonGif}
-          alt="Pokemon"
-          width={160}
-          height={160}
-          className="h-full w-full object-contain pixelated"
-        />
-      </div>
-
-      {/* Second Pokemon GIF (shown conditionally) */}
-      {showSecondPokemon && secondPokemonGif && (
+    <div ref={track} aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-20 motion-reduce:hidden">
+      {run && (
         <div
-          className="absolute z-10 h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40"
-          style={{
-            left: `${jolteonPosition - 150}px`,
-            bottom: "0",
-            transition: "none",
-          }}
+          key={run.id}
+          className="absolute inset-x-0 bottom-0"
+          style={{ animation: `pokemon-run ${run.seconds}s linear forwards` }}
+          onAnimationEnd={() => setRun(nextRun(run.id + 1))}
         >
-          <Image
-            src={secondPokemonGif}
-            alt="Second Pokemon"
-            width={160}
-            height={160}
-            className="h-full w-full object-contain pixelated"
-          />
+          <div className="absolute bottom-0 right-full z-10 h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40">
+            <Image src={run.first} alt="" width={SPRITE} height={SPRITE} className="h-full w-full object-contain pixelated" />
+          </div>
+          {run.second && (
+            <div className="absolute bottom-0 h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40" style={{ right: `calc(100% + ${GAP}px)` }}>
+              <Image src={run.second} alt="" width={SPRITE} height={SPRITE} className="h-full w-full object-contain pixelated" />
+            </div>
+          )}
         </div>
       )}
-    </>
+    </div>
   );
 }

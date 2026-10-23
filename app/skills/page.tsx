@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useTheme } from "next-themes"
 import PokemonAnimation from "@/components/PokemonAnimation"
+import SkyBackground from "@/components/SkyBackground"
 import HomeStatusBar from "@/components/home/HomeStatusBar"
 import { CATEGORIES, SKILLS, SPOKEN, evidenceFor, type Category, type Skill } from "@/components/skills/data"
 import "@/components/home/home.css"
@@ -12,11 +12,8 @@ import "@/components/home/home.css"
 // Skills as HOME-menu tiles: pick one (hover, focus or tap) to see where it's been used.
 
 export default function SkillsPage() {
-  const { theme } = useTheme()
-  const [mounted, setMounted] = useState(false)
   const [tab, setTab] = useState<Category | "All">("All")
   const [selected, setSelected] = useState<Skill>(SKILLS[0])
-  useEffect(() => setMounted(true), [])
 
   const shown = tab === "All" ? SKILLS : SKILLS.filter((s) => s.category === tab)
   const counts = useMemo(() => Object.fromEntries(SKILLS.map((s) => [s.name, evidenceFor(s.name).length])), [])
@@ -26,16 +23,7 @@ export default function SkillsPage() {
       {/* 3DS top screen */}
       <div className="relative h-[35vh] min-h-[220px] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
-          {mounted && (
-            <Image
-              src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
-              alt=""
-              width={800}
-              height={400}
-              className="h-full w-full object-cover pixelated"
-              priority
-            />
-          )}
+          <SkyBackground day="cloud" />
           <PokemonAnimation />
         </div>
       </div>

@@ -3,19 +3,16 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useTheme } from "next-themes"
 import PokemonAnimation from "@/components/PokemonAnimation"
+import SkyBackground from "@/components/SkyBackground"
 import HomeStatusBar from "@/components/home/HomeStatusBar"
 import { FEATURED, STACK, TOOLHOUSE_APPS, projectAnchor, type Shot, type WebProject } from "@/components/projects/data"
 
 const AWARD_COUNT = FEATURED.reduce((n, p) => n + (p.awards?.length ?? 0), 0)
 
 export default function ProjectsPage() {
-  const { theme } = useTheme()
-  const [mounted, setMounted] = useState(false)
   // full-size screenshot viewer: which project's shots, and which one
   const [viewer, setViewer] = useState<{ shots: Shot[]; i: number } | null>(null)
-  useEffect(() => setMounted(true), [])
   // arriving from a skill's "used in" link (/projects#love-bubbles): scroll to that card and highlight it.
   // In-app links change the URL without a real hash jump, so :target alone doesn't work
   const [highlight, setHighlight] = useState<string | null>(null)
@@ -36,16 +33,7 @@ export default function ProjectsPage() {
       {/* 3DS top screen */}
       <div className="relative h-[35vh] min-h-[220px] w-full overflow-hidden border-b-4 border-[#333333]">
         <div className="absolute inset-0">
-          {mounted && (
-            <Image
-              src={theme === "dark" ? "/images/night.gif" : "/images/cloud.gif"}
-              alt=""
-              width={800}
-              height={400}
-              className="h-full w-full object-cover pixelated"
-              priority
-            />
-          )}
+          <SkyBackground day="cloud" />
           <PokemonAnimation />
         </div>
       </div>
