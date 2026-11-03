@@ -9,7 +9,7 @@ import "./evaIntro.css";
 
 const SEEN_KEY = "eva-boot-seen";
 const REPLAY_EVENT = "eva-boot:replay";
-const GIF_SPEED = 2; // playback rate for the sync-graph clip (original is 2.75s)
+const GIF_SPEED = 2.75; // playback rate for the sync-graph clip (original is 2.75s, so ~1s)
 
 export function replayEvaIntro() {
   window.dispatchEvent(new Event(REPLAY_EVENT));
@@ -223,7 +223,7 @@ export default function EvangelionBoot() {
 // Animation engine: drives the overlay's DOM directly. Returns a cleanup.
 
 type Done = () => void;
-type Scene = { id: string; run: (done: Done) => void };
+type Scene = { id: string; run: (done: Done) => void; off?: boolean };
 
 const BOOT_LINES: [string, string][] = [
   ["NERV OS v2.6 // TERMINAL DOGMA BIOS", "head"],
@@ -242,14 +242,14 @@ const BOOT_LINES: [string, string][] = [
   ["全システム正常 — ALL SYSTEMS NOMINAL", "jp"],
   ["CONNECTING TO MAGI ............ ", "..."],
 ];
-const TERM_MS = 1900;
+const TERM_MS = 1300;
 
 const CUTS: [string, string, number][] = [
-  ["vert long", "<span>逃げちゃダメだ</span>", 200],
-  ["vert long r inv", "<span>逃げちゃダメだ</span>", 200],
-  ["vert long", "<span>逃げちゃダメだ</span>", 200],
-  ["left", "<span>I MUSTN'T</span><span>RUN AWAY.</span>", 420],
-  ["left inv", "<span>SO I</span><span>BUILT THIS.</span>", 520],
+  ["vert long", "<span>逃げちゃダメだ</span>", 150],
+  ["vert long r inv", "<span>逃げちゃダメだ</span>", 150],
+  ["vert long", "<span>逃げちゃダメだ</span>", 150],
+  ["left", "<span>I MUSTN'T</span><span>RUN AWAY.</span>", 380],
+  ["left inv", "<span>SO I</span><span>BUILT THIS.</span>", 450],
 ];
 
 const SVGNS = "http://www.w3.org/2000/svg";
@@ -441,7 +441,7 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
     term.innerHTML = "";
     dump.textContent = "";
     flicker(500);
-    BOOT_LINES.forEach(([t, s], i) => at(80 + i * 100, () => typeLine(term, t, s)));
+    BOOT_LINES.forEach(([t, s], i) => at(60 + i * 70, () => typeLine(term, t, s)));
     // right column: memory dump streaming past, plus the load bar along the bottom
     const hex = () => Math.floor(Math.random() * 256).toString(16).toUpperCase().padStart(2, "0");
     const lines: string[] = [];
@@ -476,16 +476,16 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
     result.setAttribute("class", "pending");
     resbox.setAttribute("class", "line");
     // CASPER stalls, rejects, then flips — she always hesitates
-    at(400, () => blk("melchior", "yes"));
-    at(650, () => blk("balthasar", "yes"));
-    at(900, () => blk("casper", "no", "否定"));
-    at(1180, () => blk("casper", "yes", "承認"));
-    at(1300, () => {
+    at(250, () => blk("melchior", "yes"));
+    at(400, () => blk("balthasar", "yes"));
+    at(550, () => blk("casper", "no", "否定"));
+    at(750, () => blk("casper", "yes", "承認"));
+    at(850, () => {
       result.textContent = "可決";
       result.setAttribute("class", "done");
       resbox.setAttribute("class", "line done");
     });
-    at(1700, done);
+    at(1150, done);
   }
 
   function sSync(done: Done) {
@@ -508,7 +508,7 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
         return false;
       }
     });
-    at(clipMs + 450, done);
+    at(clipMs + 300, done);
   }
 
   function sBerserk(done: Done) {
@@ -518,29 +518,29 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
     blocks.forEach((b) => b.classList.remove("on"));
     traceEl.setAttribute("points", "");
     // 1) the psychographic trace draws itself, then runs off the scale
-    const start = performance.now(), dur = 950;
+    const start = performance.now(), dur = 650;
     loop((now) => {
       const k = Math.min(1, (now - start) / dur);
       traceEl.setAttribute("points", tracePts.slice(0, Math.max(2, Math.round(tracePts.length * k))).join(" "));
       if (k >= 1) return false;
     });
     // 2) the picture corrupts into red blocks, 暴走 cuts in
-    at(950, () => {
+    at(650, () => {
       scene.classList.add("crit");
       flicker(300);
       const cStart = performance.now();
       loop((now) => {
         if (!scene.classList.contains("on")) return false;
         blocks.forEach((b) => {
-          if (Math.random() < 0.14) b.classList.toggle("on", Math.random() < 0.5 + (now - cStart) / 1400);
+          if (Math.random() < 0.14) b.classList.toggle("on", Math.random() < 0.5 + (now - cStart) / 900);
         });
       });
     });
-    at(1150, () => {
+    at(800, () => {
       over.classList.add("on");
       const vStart = performance.now();
       loop((now) => {
-        const k = Math.min(1, (now - vStart) / 400);
+        const k = Math.min(1, (now - vStart) / 300);
         const v = 100 + 300 * k * k + (k < 1 ? Math.random() * 40 : 0);
         val.textContent = k < 1 && Math.random() < 0.25 ? "#" + Math.random().toString(16).slice(2, 7).toUpperCase() : v.toFixed(1) + "%";
         if (k >= 1) {
@@ -549,7 +549,7 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
         }
       });
     });
-    at(1700, done);
+    at(1200, done);
   }
 
   function sBlue(done: Done) {
@@ -559,24 +559,24 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
     btval.textContent = "ANALYZING";
     bt.className = "lbox";
     // the energy readout identifies the blood type, then cut to the honeycomb alert
-    at(600, () => {
+    at(400, () => {
       btval.textContent = "BLUE";
       bt.className = "lbox red blue";
       root.classList.add("alert");
     });
-    at(900, () => {
+    at(600, () => {
       void scene.offsetWidth;
       scene.className = "phase on b";
       flicker(400);
     });
-    at(2000, () => {
+    at(1400, () => {
       root.classList.remove("alert");
       done();
     });
   }
 
   function sMap(done: Done) {
-    const start = performance.now(), dur = 1300;
+    const start = performance.now(), dur = 900;
     const P0 = [960, 70], P1 = [760, 60], P2 = [565, 285]; // quadratic curve toward HQ
     const pts: string[] = [];
     loop((now) => {
@@ -590,7 +590,7 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
       q("mapeta").textContent = "00:" + pad(Math.max(1, Math.round(14 - 13 * t)));
       if (t >= 1) return false;
     });
-    at(1600, done);
+    at(1100, done);
   }
 
   function sLaunch(done: Done) {
@@ -598,13 +598,13 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
     band.classList.remove("go");
     msg.innerHTML = '<span>SAFETY LOCKS RELEASED</span><span class="j">最終安全装置解除</span>';
     msg.classList.add("small");
-    at(450, () => {
+    at(350, () => {
       msg.innerHTML = '<span>LAUNCH</span><span class="j">発進</span>';
       msg.classList.remove("small");
       band.classList.add("go");
       flicker(400);
     });
-    at(1200, done);
+    at(900, done);
   }
 
   function sCuts(done: Done) {
@@ -623,8 +623,8 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
   function sCard(done: Done) {
     const parts = Array.from(q("card").children);
     parts.forEach((p) => p.classList.remove("show"));
-    [50, 350, 550, 950, 1250].forEach((t, i) => at(t, () => parts[i].classList.add("show")));
-    at(2500, done);
+    [50, 250, 400, 700, 900].forEach((t, i) => at(t, () => parts[i].classList.add("show")));
+    at(1800, done);
   }
 
   const SCENES: Scene[] = [
@@ -632,12 +632,14 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
     { id: "magi", run: sMagi },
     { id: "sync", run: sSync },
     { id: "berserk", run: sBerserk },
-    { id: "blue", run: sBlue },
-    { id: "map", run: sMap },
-    { id: "band", run: sLaunch },
+    // cut for length: remove `off: true` to bring a scene back
+    { id: "blue", run: sBlue, off: true },
+    { id: "map", run: sMap, off: true },
+    { id: "band", run: sLaunch, off: true },
     { id: "cuts", run: sCuts },
     { id: "card", run: sCard },
   ];
+  const sequence = SCENES.filter((s) => !s.off);
 
   // ---------- runner ----------
   function finish() {
@@ -672,8 +674,8 @@ function runBoot(root: HTMLElement, onDone: () => void): () => void {
     });
     let i = 0;
     const next = () => {
-      if (i >= SCENES.length) return finish();
-      const s = SCENES[i++];
+      if (i >= sequence.length) return finish();
+      const s = sequence[i++];
       show(s.id);
       s.run(next);
     };

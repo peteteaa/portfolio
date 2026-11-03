@@ -48,8 +48,8 @@ export default function ContactPage() {
       await navigator.clipboard.writeText(EMAIL)
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
-    } catch (error) {
-      console.error("Copy failed:", error)
+    } catch {
+      // clipboard blocked (insecure context or denied); the address is still on screen
     }
   }
 

@@ -185,7 +185,6 @@ export default function RetroChatroom({ isOpen, onClose }: RetroChatroomProps) {
         setMessages((prev) => prev.filter((msg) => msg.id !== assistantMessageId));
         return;
       }
-      console.error("Error sending message:", error);
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === assistantMessageId

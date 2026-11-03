@@ -9,7 +9,7 @@ const TCGDEX_SERIES_TCGP = `${TCGDEX_BASE}/series/tcgp`
 const TCGDEX_CARDS = `${TCGDEX_BASE}/cards`
 const TCGPLAYER_PRODUCT = "https://www.tcgplayer.com/product"
 const TCGPLAYER_SEARCH = "https://www.tcgplayer.com/search/pokemon/product"
-const PACK_IMAGE = "/images/packart.png"
+const PACK_IMAGE = "/images/packart.webp"
 
 type SetListItem = { id: string; name: string; cardCount?: { total: number } }
 type SetCard = { id: string; name: string; image?: string }
@@ -255,8 +255,7 @@ export default function PackOpeningSimulator() {
           setTimeout(() => reject(new Error("Pack load timed out")), PACK_BUILD_TIMEOUT_MS)
         ),
       ])
-    } catch (e) {
-      console.error(e)
+    } catch {
       setPhase("idle")
     }
   }, [])

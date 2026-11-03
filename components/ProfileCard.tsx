@@ -270,7 +270,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
               window.addEventListener('deviceorientation', deviceOrientationHandler);
             }
           })
-          .catch(console.error);
+          .catch(() => {});
       } else {
         window.addEventListener('deviceorientation', deviceOrientationHandler);
       }
