@@ -45,18 +45,29 @@ function isGameIllustrator(illustrator: string | undefined): boolean {
 }
 
 const IMAGE_CHECK_TIMEOUT_MS = 5000
+const MAX_IMAGE_SWAPS = 4
 
-async function imageLoads(url: string): Promise<boolean> {
-  if (!url) return false
-  try {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), IMAGE_CHECK_TIMEOUT_MS)
-    const res = await fetch(url, { method: "HEAD", signal: controller.signal })
-    clearTimeout(timeoutId)
-    return res.ok
-  } catch {
-    return false
-  }
+// Load the image the way the card's <img> will, rather than with fetch: an <img> needs no CORS, and
+// assets.tcgdex.net sends a duplicated Access-Control-Allow-Origin header that makes browsers reject
+// every fetch to it. A successful check also leaves the image in the cache for the reveal.
+function imageLoads(url: string): Promise<boolean> {
+  if (!url) return Promise.resolve(false)
+  return new Promise((resolve) => {
+    const img = new Image()
+    const timeoutId = setTimeout(() => {
+      img.src = ""
+      resolve(false)
+    }, IMAGE_CHECK_TIMEOUT_MS)
+    img.onload = () => {
+      clearTimeout(timeoutId)
+      resolve(true)
+    }
+    img.onerror = () => {
+      clearTimeout(timeoutId)
+      resolve(false)
+    }
+    img.src = url
+  })
 }
 
 function getHighResImageUrl(image: string | undefined): string {
@@ -125,8 +136,17 @@ export default function PackOpeningSimulator() {
   const tlRef = useRef<gsap.core.Timeline | null>(null)
 
   const PACK_BUILD_TIMEOUT_MS = 60_000
+  const buildIdRef = useRef(0)
 
   const buildPack = useCallback(async () => {
+    // a build that timed out (or was replaced by a newer one) keeps running in the background;
+    // it must not write its pack over the current state when it finally finishes
+    const buildId = ++buildIdRef.current
+    const isStale = () => buildIdRef.current !== buildId
+    tlRef.current?.kill()
+    // the last opening left the flap torn off via GSAP inline styles; put it back for the new pack
+    if (packTopRef.current) gsap.set(packTopRef.current, { clipPath: "inset(0% 0% 90% 0%)", rotationX: 0 })
+    if (packBottomRef.current) gsap.set(packBottomRef.current, { opacity: 1 })
     setPhase("loading")
     setPackCards([])
     setRevealedIndex(0)
@@ -173,6 +193,7 @@ export default function PackOpeningSimulator() {
         break
       }
       if (!setData || !chosenSetMeta) throw new Error("No sets with enough cards available")
+      if (isStale()) return
       setSetName(setData.name ?? chosenSetMeta.name)
       setSetId(chosenSetMeta.id)
       const cards = setData.cards?.filter((c) => c.id && c.image) ?? []
@@ -192,15 +213,7 @@ export default function PackOpeningSimulator() {
         (c) => !isGameIllustrator(c.illustrator) && !isPocketCard(c)
       )
       if (withoutGameArt.length < 10) throw new Error("Not enough non-game cards in set")
-
-      const imageChecks = await Promise.all(
-        withoutGameArt.map(async (c) => ({
-          card: c,
-          ok: await imageLoads(getHighResImageUrl(c.image)),
-        }))
-      )
-      const withValidImage = imageChecks.filter((x) => x.ok).map((x) => x.card)
-      const pool = withValidImage.length >= 10 ? withValidImage : withoutGameArt
+      const pool = withoutGameArt
 
       const common = pool.filter(
         (c) => c.rarity && /^common$/i.test(c.rarity.trim())
@@ -234,20 +247,27 @@ export default function PackOpeningSimulator() {
       // Least rare first (index 0) = revealed first; rarest last (index 9) = revealed last
       pack.sort((a, b) => rarityRank(a.rarity) - rarityRank(b.rarity))
 
+      // Check only the 10 chosen images, in parallel (this preloads them too). A card whose image won't
+      // load is swapped for a card of the same rarity tier, so the pack keeps its mix and its order.
       const packIds = new Set(pack.map((c) => c.id))
-      const replacementPool = pool.filter((c) => !packIds.has(c.id))
+      const spares = shuffle(pool.filter((c) => !packIds.has(c.id)))
+      const loaded = await Promise.all(pack.map((c) => imageLoads(getHighResImageUrl(c.image))))
       for (let i = 0; i < pack.length; i++) {
-        const url = getHighResImageUrl(pack[i].image)
-        if (!(await imageLoads(url))) {
-          for (const candidate of shuffle(replacementPool)) {
-            if (!(await imageLoads(getHighResImageUrl(candidate.image)))) continue
+        if (loaded[i]) continue
+        const tier = rarityRank(pack[i].rarity)
+        const candidates = spares
+          .filter((c) => rarityRank(c.rarity) === tier)
+          .slice(0, MAX_IMAGE_SWAPS)
+        for (const candidate of candidates) {
+          spares.splice(spares.indexOf(candidate), 1)
+          if (await imageLoads(getHighResImageUrl(candidate.image))) {
             pack[i] = candidate
-            replacementPool.splice(replacementPool.indexOf(candidate), 1)
             break
           }
         }
       }
 
+      if (isStale()) return
       setPackCards(pack)
       setPhase("ready")
         })(),
@@ -256,6 +276,8 @@ export default function PackOpeningSimulator() {
         ),
       ])
     } catch {
+      if (isStale()) return
+      buildIdRef.current++ // retire this build so its still-running fetches can't land later
       setPhase("idle")
     }
   }, [])
